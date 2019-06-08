@@ -41,17 +41,6 @@ class SceneLogin extends Phaser.Scene {
         this.background.displayWidth = this.cw;
         this.background.scaleY = this.background.scaleX;
 
-        this.add.tween({
-            targets: [ this.background ],
-            ease: "Sine.easeInOut",
-            duration: 3000,
-            delay: 0,
-            alpha: {
-                getStart: () => 0,
-                getEnd: () => 1
-            }
-        });
-
         // Game title.
         WebFont.load({
             google: {
@@ -108,8 +97,9 @@ class SceneLogin extends Phaser.Scene {
             20
         );
 
+        // Tweens.
         this.add.tween({
-            targets: [ this.login_bg_stroke ],
+            targets: [ this.background, this.login_bg_stroke ],
             ease: "Sine.easeInOut",
             duration: 3000,
             delay: 0,
