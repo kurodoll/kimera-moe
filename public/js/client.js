@@ -10,10 +10,7 @@ $(() => {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [ SceneGeneralUI, SceneLogin ],
-        render: {
-            "pixelArt": true
-        }
+        scene: [ SceneGeneralUI, SceneLogin ]
     };
 
     const game = new Phaser.Game(phaser_config);

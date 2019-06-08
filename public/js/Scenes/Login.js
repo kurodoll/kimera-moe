@@ -36,7 +36,6 @@ class SceneLogin extends Phaser.Scene {
     }
 
     create() {
-        //================================================================ Text
         // Background image.
         this.background = this.add.image(0, 0, "login bg").setOrigin(0, 0);
         this.background.displayWidth = this.cw;
@@ -89,6 +88,34 @@ class SceneLogin extends Phaser.Scene {
                         getEnd: () => 1
                     }
                 });
+            }
+        });
+
+        // Login prompt.
+        this.login_bg = this.add.graphics();
+        this.login_bg.fillStyle(0x000000, 0.5);
+        this.login_bg.fillRoundedRect(
+            this.cw/2 - 175, 200,
+            350, 100,
+            20
+        );
+
+        this.login_bg_stroke = this.add.graphics();
+        this.login_bg_stroke.lineStyle(1, 0xFFFFFF, 1);
+        this.login_bg_stroke.strokeRoundedRect(
+            this.cw/2 - 175, 200,
+            350, 100,
+            20
+        );
+
+        this.add.tween({
+            targets: [ this.login_bg_stroke ],
+            ease: "Sine.easeInOut",
+            duration: 3000,
+            delay: 0,
+            alpha: {
+                getStart: () => 0,
+                getEnd: () => 1
             }
         });
     }
