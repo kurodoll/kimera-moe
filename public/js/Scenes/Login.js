@@ -34,5 +34,16 @@ class SceneLogin extends Phaser.Scene {
         this.background = this.add.image(0, 0, "login bg").setOrigin(0, 0);
         this.background.displayWidth = this.cw;
         this.background.scaleY = this.background.scaleX;
+
+        this.add.tween({
+            targets: [ this.background ],
+            ease: "Sine.easeInOut",
+            duration: 3000,
+            delay: 0,
+            alpha: {
+                getStart: () => 0,
+                getEnd: () => 1
+            }
+        });
     }
 }
