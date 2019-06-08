@@ -2,6 +2,7 @@
 from log import log
 
 # Standard modules.
+import json
 import os
 
 # Networking modules.
@@ -15,6 +16,9 @@ import socketio
 config = {
     "server": {
         "default_port": 3000
+    },
+    "files": {
+        "static_files": "config/static_files.json"
     }
 }
 
@@ -23,10 +27,19 @@ config = {
 #                                                        INITIALIZE SOCKET.IO #
 # --------------------------------------------------------------------------- #
 log("server.py", "Initializing Server/Socket.io", timer_start="init sio")
-
 sio = socketio.Server()
-app = socketio.WSGIApp(sio, static_files="")  # TODO: Load static files.
 
+# Load the list of static files that should be visible to clients.
+try:
+    static_files = json.load(open(config["files"]["static_files"]))
+
+except IOError:
+    message = f"Failed to open {config['files']['static_files']}"
+    log("server.py", message, log_level="fatal error")
+
+    exit()
+
+app = socketio.WSGIApp(sio, static_files=static_files)
 log("server.py", "Initialized Server/Socket.io", timer_end="init sio")
 
 

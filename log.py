@@ -42,16 +42,18 @@ def log(caller, message, log_level="log", timer_start="", timer_end=""):
         timerStart(timer_start)
 
     # Define the output colours we'll use as short named variables.
-    reset = f"{colorama.Style.RESET_ALL}"
-    default = f"{colorama.Fore.WHITE}"
+    reset = f"{colorama.Style.RESET_ALL}{colorama.Fore.WHITE}"
     subdued = f"{colorama.Fore.BLACK}{colorama.Style.BRIGHT}"
 
     # Print a timestamp.
     now = datetime.datetime.now()
-    print(f"{subdued}{now}{reset}{default}", end=" ")
+    print(f"{subdued}{now}{reset}", end=" ")
 
     # Print the log level.
-    print(log_level.upper(), end=" ")
+    if log_level == "fatal error":
+        print(colorama.Fore.MAGENTA, end="")
+
+    print(f"{log_level.upper()}{reset}", end=" ")
 
     # Print which module called the log function.
     print(f"({caller})", end=" ")
