@@ -44,6 +44,37 @@ log("server.py", "Initialized Server/Socket.io", timer_end="init sio")
 
 
 # --------------------------------------------------------------------------- #
+#                                                       SOCKET.IO INTERACTION #
+# --------------------------------------------------------------------------- #
+clients = {}
+
+
+# ================================================== Connection & Disconnection
+@sio.on("connect")
+def connect(sid, env):
+    log("server.py", f"Connected: {sid}", "debug (network)")
+
+    clients[sid] = {
+        "online": True,
+        "env": env
+    }
+
+
+@sio.on("disconnect")
+def disconnect(sid):
+    log("server.py", f"Disconnected: {sid}", "debug (network)")
+
+    if sid in clients:
+        clients[sid]["online"] = False
+
+
+# ===================================================================== General
+@sio.on("my ping")
+def my_ping(sid, emit_time):
+    sio.emit("my pong", emit_time, room=sid)
+
+
+# --------------------------------------------------------------------------- #
 #                                                                         RUN #
 # --------------------------------------------------------------------------- #
 if __name__ == "__main__":
