@@ -20,8 +20,11 @@ class SceneGeneralUI extends Phaser.Scene {
 
     create() {
         // Display ping in the top-center of the screen.
-        this.text_ping = this.add.text(this.cw/2, 5, "", this.default_font)
+        this.text_ping = this.add.text(this.cw/2, 10, "", this.default_font)
             .setOrigin(0.5);
+
+        // Make sure the General UI scene is shown above this one.
+        this.scene.bringToTop("general ui");
     }
 
 
