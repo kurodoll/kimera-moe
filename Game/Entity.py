@@ -59,7 +59,10 @@ class Entity:
 
                     # Then update the component with the specific data given
                     # in the entity base.
-                    self.components[c].updateData(base_data["components"][c])
+                    if len(base_data["components"][c]):
+                        self.components[c].updateData(
+                            base_data["components"][c]
+                        )
 
             log(
                 self.log_str,
