@@ -10,7 +10,7 @@ $(() => {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [ SceneGeneralUI, SceneLogin ]
+        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect ]
     };
 
     const game = new Phaser.Game(phaser_config);
@@ -57,6 +57,13 @@ $(() => {
     // If a generic message is recieved, output it to the console window.
     socket.on("message", (message) => {
         game.scene.getScene("general ui").message("[server] " + message);
+    });
+
+
+    //============================================================ Account
+    socket.on("login success", () => {
+        game.scene.switch("login", "character select");
+        game.scene.getScene("general ui").message("Logged in successfully");
     });
 
 

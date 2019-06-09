@@ -60,6 +60,7 @@ def connect(sid, env):
 
     clients[sid] = {
         "online": True,
+        "logged_in": False,
         "env": env
     }
 
@@ -128,6 +129,13 @@ def register(sid, details):
 @sio.on("login")
 def login(sid, details):
     log("server.py", f"Login from {details['username']}", "debug (network)")
+
+    # If user is logging in as a guest, no need to check for anything.
+    if details["username"] == "GUEST":
+        clients[sid]["username"] = details["username"]
+        clients[sid]["logged_in"] = True
+
+        sio.emit("login success")
 
 
 # --------------------------------------------------------------------------- #
