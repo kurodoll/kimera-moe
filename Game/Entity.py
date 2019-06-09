@@ -23,6 +23,13 @@ class Entity:
         self.id = nextID()
         self.log_str = f"Entity#{self.id}"
 
+        log(
+            self.log_str,
+            "Creating new entity",
+            "debug(2)",
+            timer_start=self.log_str
+        )
+
         self.components = {}
 
         # If this entity is to be based off of a base, then load that base data
@@ -54,10 +61,15 @@ class Entity:
                     # in the entity base.
                     self.components[c].updateData(base_data["components"][c])
 
-            log(self.log_str, f"Created from base '{base}'", "debug(2)")
+            log(
+                self.log_str,
+                f"Created from base '{base}'",
+                "debug(2)",
+                timer_end=self.log_str
+            )
 
         else:
-            log(self.log_str, "Created", "debug(2)")
+            log(self.log_str, "Created", "debug(2)", timer_end=self.log_str)
 
     def toJSON(self):
         result = {
