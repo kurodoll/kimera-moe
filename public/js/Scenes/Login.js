@@ -141,25 +141,25 @@ class SceneLogin extends Phaser.Scene {
         this.btn_login = this.add.graphics();
         this.btn_login.fillStyle(0x000000, 0.5);
         this.btn_login.fillRoundedRect(
-            this.cw/2 - 110, 275,
+            this.cw/2 - 115, 275,
             110, 30,
             5
         );
 
         this.btn_login_text = this.add.text(
-            this.cw/2 - 55, 290, "Login", this.default_font
+            this.cw/2 - 60, 290, "Login", this.default_font
         ).setOrigin(0.5).setInteractive();
 
         this.btn_register = this.add.graphics();
         this.btn_register.fillStyle(0x000000, 0.5);
         this.btn_register.fillRoundedRect(
-            this.cw/2 + 10, 275,
+            this.cw/2 + 5, 275,
             110, 30,
             5
         );
 
         this.btn_register_text = this.add.text(
-            this.cw/2 + 65, 290, "Register", this.default_font
+            this.cw/2 + 60, 290, "Register", this.default_font
         ).setOrigin(0.5).setInteractive();
 
         // Button interaction.
