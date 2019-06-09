@@ -66,12 +66,16 @@ $(() => {
     // If the user presses backspace or similar, rather than having the browser
     // go back in history or anything like that, forward the keypress to the
     // relevant scene.
+    // Overrides backspace, tab, and the / key.
     $(document).on("keydown", (e) => {
-        if (e.keyCode == 8 || e.key == "/" || e.key == "_") {
+        if (e.keyCode == 8 || e.keyCode == 9 || e.key == "/" || e.key == "_") {
             e.preventDefault();
 
             if (active_ui_element == "console") {
                 game.scene.getScene("general ui").keypress(e);
+            }
+            else if (active_ui_element.substring(0, 5) == "login") {
+                game.scene.getScene("login").keypress(e);
             }
         }
     });

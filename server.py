@@ -119,6 +119,12 @@ def command(sid, command_text):
                 sio.emit("message", "No client with that SID!", room=sid)
 
 
+# ======================================================================= Login
+@sio.on("login")
+def login(sid, details):
+    log("server.py", f"Login from {details['username']}", "debug (network)")
+
+
 # --------------------------------------------------------------------------- #
 #                                                                         RUN #
 # --------------------------------------------------------------------------- #

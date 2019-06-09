@@ -33,6 +33,30 @@ class SceneLogin extends Phaser.Scene {
             "webfont",
             "https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js"
         );
+
+        // Fonts.
+        this.default_font = {
+            fontFamily: "Verdana",
+            fontSize: 15,
+            color: "#FFFFFF"
+        };
+
+        this.subdued_font = {
+            fontFamily: "Verdana",
+            fontSize: 15,
+            color: "#888888"
+        };
+
+        // Create a list of characters that are valid for text input.
+        this.valid_keys = [ 32 ]; // 32 = Space
+
+        for (let i = 48; i <= 57; i++) { // Numbers 0-9 & their symbols
+            this.valid_keys.push(i);
+        }
+
+        for (let i = 65; i <= 90; i++) { // Characters a-z & A-Z
+            this.valid_keys.push(i);
+        }
     }
 
     create() {
@@ -97,9 +121,42 @@ class SceneLogin extends Phaser.Scene {
             20
         );
 
+        this.username_label = this.add.text(
+            this.cw/2 - 150, 220, "Username:", this.default_font
+        );
+
+        this.password_label = this.add.text(
+            this.cw/2 - 150, 240, "Password:", this.subdued_font
+        );
+
+        this.username_field = this.add.text(
+            this.cw/2 - 60, 220, "", this.default_font
+        );
+
+        this.password_field = this.add.text(
+            this.cw/2 - 60, 240, "", this.default_font
+        );
+
+        // Allow user to click the login prompt to focus it.
+        this.login_prompt_interact = this.add.zone(
+            this.cw/2, 250,
+            350, 100
+        ).setInteractive();
+
+        this.input.on("gameobjectup", (pointer, game_object) => {
+            if (game_object === this.login_prompt_interact) {
+                active_ui_element = "login username";
+            }
+        });
+
         // Tweens.
         this.add.tween({
-            targets: [ this.background, this.login_bg_stroke ],
+            targets: [
+                this.background,
+                this.login_bg_stroke,
+                this.username_label,
+                this.password_label
+            ],
             ease: "Sine.easeInOut",
             duration: 3000,
             delay: 0,
@@ -111,5 +168,78 @@ class SceneLogin extends Phaser.Scene {
 
         // Make sure the General UI scene is shown above this one.
         this.scene.bringToTop("general ui");
+
+        // Focus the username field by default.
+        active_ui_element = "login username";
+
+        // Keep track of which UI element is in focus.
+        setInterval(() => {
+            if (active_ui_element == "login username") {
+                this.username_label.setStyle({ color: "#FFFFFF" });
+            }
+            else {
+                this.username_label.setStyle({ color: "#888888" });
+            }
+
+            if (active_ui_element == "login password") {
+                this.password_label.setStyle({ color: "#FFFFFF" });
+            }
+            else {
+                this.password_label.setStyle({ color: "#888888" });
+            }
+        }, 100);
+
+
+        // ===================================================== KEYBOARD INPUT
+        this.input.keyboard.on("keydown", (key) => {
+            if (active_ui_element == "login username") {
+                if (this.valid_keys.indexOf(key.keyCode) > -1) {
+                    this.username_field.text += key.key;
+                }
+                else if (key.keyCode == 13) {
+                    active_ui_element = "login password";
+                }
+            }
+            else if (active_ui_element == "login password") {
+                if (this.valid_keys.indexOf(key.keyCode) > -1) {
+                    this.password_field.text += key.key;
+                }
+                else if (key.keyCode == 13) {
+                    socket.emit("login", {
+                        "username": this.username_field.text,
+                        "password": this.password_field.text
+                    });
+                }
+            }
+        });
+    }
+
+
+      //---------------------------------------------------------------------//
+     //                                                   CUSTOM FUNCTIONS  //
+    //---------------------------------------------------------------------//
+    keypress(key) {
+        if (active_ui_element == "login username") {
+            if (key.keyCode == 8) { // Backspace
+                this.username_field.text = this.username_field.text.slice(0, -1);
+            }
+            else if (key.keyCode == 9) { // Tab
+                active_ui_element = "login password";
+            }
+            else if (key.key == "_") {
+                this.username_field.text += key.key;
+            }
+        }
+        else if (active_ui_element == "login password") {
+            if (key.keyCode == 8) { // Backspace
+                this.password_field.text = this.password_field.text.slice(0, -1);
+            }
+            else if (key.keyCode == 9) { // Tab
+                active_ui_element = "login username";
+            }
+            else if (key.key == "_") {
+                this.password_field.text += key.key;
+            }
+        }
     }
 }

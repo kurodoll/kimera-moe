@@ -59,7 +59,7 @@ class SceneGeneralUI extends Phaser.Scene {
 
         // Allow user to click the console window to focus it.
         this.console_interact = this.add.zone(0, 0, 500, this.ch)
-            .setInteractive();
+            .setOrigin(0, 0).setInteractive();
 
         this.input.on("gameobjectup", (pointer, game_object) => {
             if (game_object === this.console_interact) {
