@@ -26,7 +26,6 @@ class SceneGeneralUI extends Phaser.Scene {
 
         this.message_history = [];
         this.message_history_cur_y = 7;
-        this.message_history_bottom = this.ch - 30;
 
         // Create a list of characters that are valid for text input.
         this.valid_keys = [ 32 ]; // 32 = Space
@@ -41,25 +40,39 @@ class SceneGeneralUI extends Phaser.Scene {
     }
 
     create() {
+        // Define where UI elements should go.
+        this.coords_console = { x: 0, y: this.ch - 300, w: this.cw, h: 300 };
+
         // Display ping in the top-center of the screen.
         this.text_ping = this.add.text(
-            this.cw/2, 10,
+            10, 7,
             "Connecting to server...",
             this.default_font
-        ).setOrigin(0.5);
+        );
 
         // Console window.
         this.console_bg = this.add.graphics();
-        this.console_bg.fillStyle(0x000000, 0.8);
-        this.console_bg.fillRect(0, 0, 500, this.ch);
+        this.console_bg.fillStyle(0x111111, 0.8);
+        this.console_bg.fillRect(
+            this.coords_console.x,
+            this.coords_console.y,
+            this.coords_console.w,
+            this.coords_console.h
+        );
 
         this.console_input = this.add.text(
-            10, this.ch - 20, "", this.default_font
+            this.coords_console.x + 10,
+            this.coords_console.y + this.coords_console.h - 20,
+            "", this.default_font
         );
 
         // Allow user to click the console window to focus it.
-        this.console_interact = this.add.zone(0, 0, 500, this.ch)
-            .setOrigin(0, 0).setInteractive();
+        this.console_interact = this.add.zone(
+            this.coords_console.x,
+            this.coords_console.y,
+            this.coords_console.w,
+            this.coords_console.h
+        ).setOrigin(0, 0).setInteractive();
 
         this.input.on("gameobjectup", (pointer, game_object) => {
             if (game_object === this.console_interact) {
@@ -69,8 +82,12 @@ class SceneGeneralUI extends Phaser.Scene {
 
         // Console text is actually rendered off-screen, and this camera is set
         // to look at that area.
-        this.console_camera = this.cameras.add(0, 0, 500, this.ch)
-            .setScroll(-500, 0);
+        this.console_camera = this.cameras.add(
+            this.coords_console.x,
+            this.coords_console.y,
+            this.coords_console.w,
+            this.coords_console.h
+        ).setScroll(this.cw, 0);
 
 
         // ===================================================== KEYBOARD INPUT
@@ -84,6 +101,14 @@ class SceneGeneralUI extends Phaser.Scene {
                 else if (key.keyCode == 13) {
                     socket.emit("command", this.console_input.text);
                     this.console_input.text = "";
+                }
+                
+                // Arrow keys up and down scroll the console.
+                else if (key.keyCode == 38) {
+                    this.console_camera.scrollY += this.coords_console.h / 2;
+                }
+                else if (key.keyCode == 40) {
+                    this.console_camera.scrollY -= this.coords_console.h / 2;
                 }
             }
         });
@@ -106,14 +131,14 @@ class SceneGeneralUI extends Phaser.Scene {
         // Add canvas text objects to the history. To scroll back in history,
         // a camera will be used.
         const message_text = this.add.text(
-            -430, this.message_history_cur_y,
+            this.cw + 70, this.message_history_cur_y,
             message,
             this.default_font
         ).setWordWrapWidth(400).setCrop(0, 0, 400, this.ch);
 
         this.message_history.push({
             "timestamp": this.add.text(
-                -490, this.message_history_cur_y,
+                this.cw + 10, this.message_history_cur_y,
                 new Date().toISOString().substring(11, 19),
                 this.subdued_font
             ),
@@ -125,9 +150,11 @@ class SceneGeneralUI extends Phaser.Scene {
 
         // If the text is going out of the screen, scroll the camera down so
         // that the latest message can always be seen.
-        if (this.message_history_cur_y > this.message_history_bottom) {
+        const message_history_bottom = this.coords_console.h - 30;
+
+        if (this.message_history_cur_y > message_history_bottom) {
             this.console_camera.scrollY =
-                this.message_history_cur_y - this.message_history_bottom;
+                this.message_history_cur_y - message_history_bottom;
         }
     }
 
