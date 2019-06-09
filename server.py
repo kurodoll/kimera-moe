@@ -53,7 +53,7 @@ clients = {}
 # ================================================== Connection & Disconnection
 @sio.on("connect")
 def connect(sid, env):
-    log("server.py", f"Connected: {sid}", "debug (network)")
+    log("server.py", f"Connected: {sid}", "debug (network)", timer_start=sid)
 
     clients[sid] = {
         "online": True,
@@ -66,7 +66,7 @@ def connect(sid, env):
 
 @sio.on("disconnect")
 def disconnect(sid):
-    log("server.py", f"Disconnected: {sid}", "debug (network)")
+    log("server.py", f"Disconnected: {sid}", "debug (network)", timer_end=sid)
 
     if sid in clients:
         clients[sid]["online"] = False
