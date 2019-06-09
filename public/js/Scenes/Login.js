@@ -130,7 +130,7 @@ class SceneLogin extends Phaser.Scene {
         );
 
         this.username_field = this.add.text(
-            this.cw/2 - 60, 220, "", this.default_font
+            this.cw/2 - 60, 220, "GUEST", this.default_font
         );
 
         this.password_field = this.add.text(
@@ -205,6 +205,8 @@ class SceneLogin extends Phaser.Scene {
                 this.login_bg_stroke,
                 this.username_label,
                 this.password_label,
+                this.username_field,
+                this.password_field,
                 this.btn_login_text,
                 this.btn_register_text
             ],
