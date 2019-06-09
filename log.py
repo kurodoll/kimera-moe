@@ -52,6 +52,8 @@ def log(caller, message, log_level="log", timer_start="", timer_end=""):
     # Print the log level.
     if log_level == "fatal error":
         print(colorama.Fore.MAGENTA, end="")
+    elif log_level == "debug":
+        print(colorama.Fore.CYAN, end="")
     elif log_level == "debug (network)":
         print(colorama.Fore.BLUE, end="")
 

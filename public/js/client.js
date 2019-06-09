@@ -1,3 +1,7 @@
+let socket;
+let active_ui_element = null;
+
+
 $(() => {
       //---------------------------------------------------------------------//
      //                                                  INITIALIZE PHASER  //
@@ -17,7 +21,7 @@ $(() => {
       //---------------------------------------------------------------------//
      //                                               INITIALIZE SOCKET.IO  //
     //---------------------------------------------------------------------//
-    const socket = io.connect();
+    socket = io.connect();
     let connected = false;
 
 
@@ -53,5 +57,22 @@ $(() => {
     // If a generic message is recieved, output it to the console window.
     socket.on("message", (message) => {
         game.scene.getScene("general ui").message("[server] " + message);
+    });
+
+
+      //---------------------------------------------------------------------//
+     //                                         JQUERY BROWSER INTERACTION  //
+    //---------------------------------------------------------------------//
+    // If the user presses backspace or similar, rather than having the browser
+    // go back in history or anything like that, forward the keypress to the
+    // relevant scene.
+    $(document).on("keydown", (e) => {
+        if (e.keyCode == 8 || e.key == "/" || e.key == "_") {
+            e.preventDefault();
+
+            if (active_ui_element == "console") {
+                game.scene.getScene("general ui").keypress(e);
+            }
+        }
     });
 });

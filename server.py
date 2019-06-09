@@ -4,6 +4,7 @@ from log import log
 # Standard modules.
 import json
 import os
+import pprint
 
 # Networking modules.
 import eventlet
@@ -22,6 +23,8 @@ config = {
         "static_files": "config/static_files.json"
     }
 }
+
+pp = pprint.PrettyPrinter(indent=4)
 
 
 # --------------------------------------------------------------------------- #
@@ -76,6 +79,44 @@ def disconnect(sid):
 @sio.on("my ping")
 def my_ping(sid, emit_time):
     sio.emit("my pong", emit_time, room=sid)
+
+
+# User has sent a command.
+@sio.on("command")
+def command(sid, command_text):
+    log(
+        "server.py",
+        f"Recieved command '{command_text}' (from {sid})",
+        "debug"
+    )
+
+    command_tokens = command_text.split(" ")
+
+    if len(command_tokens) == 2:
+        if command_tokens[0] == "/gm":
+            if command_tokens[1] == "connected_users":
+                response = "Connected Users:\n"
+
+                for c in clients:
+                    if clients[c]["online"]:
+                        response += c + "\n"
+
+                response += "END."
+
+                sio.emit("message", response, room=sid)
+
+    elif len(command_tokens) == 3:
+        if command_tokens[0] == "/gm":
+            if command_tokens[1] == "client_env":
+                for c in clients:
+                    if c.startswith(command_tokens[2]):
+                        response = f"env of {c}:\n"
+                        response += pp.pformat(clients[c]["env"])
+
+                        sio.emit("message", response, room=sid)
+                        return
+
+                sio.emit("message", "No client with that SID!", room=sid)
 
 
 # --------------------------------------------------------------------------- #
