@@ -105,10 +105,10 @@ class SceneGeneralUI extends Phaser.Scene {
                 
                 // Arrow keys up and down scroll the console.
                 else if (key.keyCode == 38) {
-                    this.console_camera.scrollY += this.coords_console.h / 2;
+                    this.console_camera.scrollY -= this.coords_console.h / 2;
                 }
                 else if (key.keyCode == 40) {
-                    this.console_camera.scrollY -= this.coords_console.h / 2;
+                    this.console_camera.scrollY += this.coords_console.h / 2;
                 }
             }
         });
