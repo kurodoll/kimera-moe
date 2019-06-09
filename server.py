@@ -138,6 +138,15 @@ def login(sid, details):
         sio.emit("login success")
 
 
+@sio.on("new character")
+def new_character(sid, details):
+    log(
+        "server.py",
+        f"New character request from {clients[sid]['username']}",
+        "debug"
+    )
+
+
 # --------------------------------------------------------------------------- #
 #                                                                         RUN #
 # --------------------------------------------------------------------------- #
