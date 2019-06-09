@@ -15,7 +15,8 @@ import socketio
 # --------------------------------------------------------------------------- #
 config = {
     "server": {
-        "default_port": 3000
+        "default_port": 3000,
+        "motd": "Welcome to the Official Kimera M.O.E. server!"
     },
     "files": {
         "static_files": "config/static_files.json"
@@ -58,6 +59,9 @@ def connect(sid, env):
         "online": True,
         "env": env
     }
+
+    # Send client the MOTD.
+    sio.emit("message", config["server"]["motd"], room=sid)
 
 
 @sio.on("disconnect")

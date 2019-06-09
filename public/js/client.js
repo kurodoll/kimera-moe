@@ -1,7 +1,3 @@
-const socket = io.connect();
-let connected = false;
-
-
 $(() => {
       //---------------------------------------------------------------------//
      //                                                  INITIALIZE PHASER  //
@@ -18,18 +14,27 @@ $(() => {
     game.scene.start("login");
 
 
+      //---------------------------------------------------------------------//
+     //                                               INITIALIZE SOCKET.IO  //
+    //---------------------------------------------------------------------//
+    const socket = io.connect();
+    let connected = false;
+
+
        //--------------------------------------------------------------------//
       //                                             SOCKET.IO INTERACTION  //
      //--------------------------------------------------------------------//
     //========================================= Connection & Disconnection
     socket.on("connect", () => {
         connected = true;
+        game.scene.getScene("general ui").message("Connected to server.");
     });
 
 
     socket.on("disconnect", () => {
         connected = false;
         game.scene.getScene("general ui").setPing(-1);
+        game.scene.getScene("general ui").message("Disconnected from server.");
     });
 
 
@@ -44,5 +49,10 @@ $(() => {
     socket.on("my pong", (emit_time) => {
         const ping = (+new Date()) - emit_time;
         game.scene.getScene("general ui").setPing(ping);
+    });
+
+    // If a generic message is recieved, output it to the console window.
+    socket.on("message", (message) => {
+        game.scene.getScene("general ui").message("[server] " + message);
     });
 });
