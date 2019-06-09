@@ -1,5 +1,6 @@
 # Custom modules.
 from log import log
+from Game import Manager
 
 # Standard modules.
 import json
@@ -25,6 +26,9 @@ config = {
 }
 
 pp = pprint.PrettyPrinter(indent=4)
+
+# Game management.
+GameManager = Manager.Manager()
 
 
 # --------------------------------------------------------------------------- #
@@ -111,13 +115,26 @@ def command(sid, command_text):
             if command_tokens[1] == "client_env":
                 for c in clients:
                     if c.startswith(command_tokens[2]):
-                        response = f"env of {c}:\n"
+                        response = f"[json] env of {c}:\n"
                         response += pp.pformat(clients[c]["env"])
 
                         sio.emit("message", response, room=sid)
                         return
 
                 sio.emit("message", "No client with that SID!", room=sid)
+
+            # Retrieve the data of a specific entity.
+            elif command_tokens[1] == "entity":
+                ent = GameManager.getEntity(int(command_tokens[2]))
+
+                if ent:
+                    response = f"[json] Data of Entity#{ent.id}:\n"
+                    response += pp.pformat(ent.toJSON())
+
+                    sio.emit("message", response, room=sid)
+
+                else:
+                    sio.emit("message", "No such entity!", room=sid)
 
 
 # ============================================================ Login & Register
@@ -145,6 +162,8 @@ def new_character(sid, details):
         f"New character request from {clients[sid]['username']}",
         "debug"
     )
+
+    GameManager.newCharacter()
 
 
 # --------------------------------------------------------------------------- #

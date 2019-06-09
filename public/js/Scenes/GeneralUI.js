@@ -24,6 +24,12 @@ class SceneGeneralUI extends Phaser.Scene {
             color: "#888888"
         };
 
+        this.code_font = {
+            fontFamily: "Consolas",
+            fontSize: 11,
+            color: "#888888"
+        };
+
         this.message_history = [];
         this.message_history_cur_y = 7;
 
@@ -128,13 +134,20 @@ class SceneGeneralUI extends Phaser.Scene {
     }
 
     message(message) {
+        let font_to_use = this.default_font;
+
+        if (message.substring(9, 15) == "[json]") {
+            font_to_use = this.code_font;
+        }
+
         // Add canvas text objects to the history. To scroll back in history,
         // a camera will be used.
         const message_text = this.add.text(
             this.cw + 70, this.message_history_cur_y,
             message,
-            this.default_font
-        ).setWordWrapWidth(400).setCrop(0, 0, 400, this.ch);
+            font_to_use
+        ).setWordWrapWidth(this.coords_console.w - 80)
+         .setCrop(0, 0, this.coords_console.w - 80, this.ch);
 
         this.message_history.push({
             "timestamp": this.add.text(

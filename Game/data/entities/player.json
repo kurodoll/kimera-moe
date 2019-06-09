@@ -1,0 +1,13 @@
+{
+    "components": {
+        "position": {
+            "level": "new world cave",
+            "x": -1,
+            "y": -1
+        },
+
+        "sprite": {
+            "sprite": "player"
+        }
+    }
+}

@@ -52,12 +52,21 @@ def log(caller, message, log_level="log", timer_start="", timer_end=""):
     # Print the log level.
     if log_level == "fatal error":
         print(colorama.Fore.MAGENTA, end="")
+    elif log_level == "error":
+        print(colorama.Fore.RED, end="")
+    elif log_level == "warning":
+        print(colorama.Fore.YELLOW, end="")
     elif log_level == "debug":
         print(colorama.Fore.CYAN, end="")
+    elif log_level == "debug(2)":
+        print(subdued, end="")
     elif log_level == "debug (network)":
         print(colorama.Fore.BLUE, end="")
 
-    print(f"{log_level.upper()}{reset}", end=" ")
+    if log_level != "debug(2)":
+        print(f"{log_level.upper()}{reset}", end=" ")
+    else:
+        print(f"{log_level.upper()}", end=" ")
 
     # Print which module called the log function.
     print(f"({caller})", end=" ")
