@@ -136,7 +136,7 @@ class SceneGeneralUI extends Phaser.Scene {
             if (key.keyCode == 8) { // Backspace
                 this.console_input.text = this.console_input.text.slice(0, -1);
             }
-            else {
+            else if (key.keyCode != 9) { // DON'T allow tab
                 this.console_input.text += key.key;
             }
         }
