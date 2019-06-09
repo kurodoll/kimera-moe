@@ -84,6 +84,10 @@ $(() => {
             else if (active_ui_element.substring(0, 5) == "login") {
                 game.scene.getScene("login").keypress(e);
             }
+            else if (active_ui_element.substring(0, 16) == "character select")
+            {
+                game.scene.getScene("character select").keypress(e);
+            }
         }
     });
 });

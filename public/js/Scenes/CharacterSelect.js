@@ -68,6 +68,17 @@ class SceneCharacterSelect extends Phaser.Scene {
       //---------------------------------------------------------------------//
      //                                                   CUSTOM FUNCTIONS  //
     //---------------------------------------------------------------------//
+    keypress(key) {
+        if (active_ui_element == "character select name") {
+            if (key.keyCode == 8) { // Backspace
+                this.name_field.text = this.name_field.text.slice(0, -1);
+            }
+            else if (key.keyCode != 9) { // DON'T allow tab
+                this.console_input.text += key.key;
+            }
+        }
+    }
+
     newCharacterScreen() {
         this.menu.visible = false;
 
