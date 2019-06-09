@@ -3,10 +3,19 @@
         "content_type": "text/html",
         "filename": "pages/index.html"
     },
+    "/register": {
+        "content_type": "text/html",
+        "filename": "pages/register.html"
+    },
+
 
     "/js/socket.io": {
         "content_type": "text/javascript",
         "filename": "public/js/socket.io.js"
+    },
+    "/js/register.js": {
+        "content_type": "text/javascript",
+        "filename": "public/js/register.js"
     },
     "/js/client.js": {
         "content_type": "text/javascript",

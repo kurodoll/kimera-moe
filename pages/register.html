@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+        <meta content="utf-8" http-equiv="encoding">
+
+        <title>Register - Kimera M.O.E.</title>
+
+        <script src='https://code.jquery.com/jquery-3.4.0.min.js'></script>
+        <script src='/js/socket.io'></script>
+        <script src='/js/register.js'></script>
+    </head>
+
+    <body>
+        <form id="form">
+            <p>
+                Usernames may use a-z, A-Z, and '_'. 20 characters max.<br />
+                Passwords may use a-z, A-Z, '_', and 0-9 plus their symbols (!@#$%^&*()). 1000 characters max.
+            </p>
+
+            <label for="username">Username</label>
+            <input id="username" type="text" maxlength="20" />
+
+            <label for="password">Password</label>
+            <input id="password" type="text" maxlength="1000" />
+
+            <input type="submit" value="Register" />
+        </form>
+    </body>
+</html>

@@ -119,7 +119,12 @@ def command(sid, command_text):
                 sio.emit("message", "No client with that SID!", room=sid)
 
 
-# ======================================================================= Login
+# ============================================================ Login & Register
+@sio.on("register")
+def register(sid, details):
+    log("server.py", f"Registration request recieved", "debug (network)")
+
+
 @sio.on("login")
 def login(sid, details):
     log("server.py", f"Login from {details['username']}", "debug (network)")
