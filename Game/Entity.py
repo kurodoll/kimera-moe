@@ -71,6 +71,12 @@ class Entity:
         else:
             log(self.log_str, "Created", "debug(2)", timer_end=self.log_str)
 
+    def getComponent(self, component):
+        if component in self.components:
+            return self.components[component]
+
+        return None
+
     def toJSON(self):
         result = {
             "id": self.id,

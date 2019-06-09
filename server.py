@@ -163,7 +163,7 @@ def new_character(sid, details):
         "debug"
     )
 
-    GameManager.newCharacter()
+    GameManager.newCharacter(details)
 
 
 # --------------------------------------------------------------------------- #

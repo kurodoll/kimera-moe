@@ -1,5 +1,9 @@
 {
     "components": {
+        "bio": {
+            "name": "?"
+        },
+
         "position": {
             "level": "new world cave",
             "x": -1,
