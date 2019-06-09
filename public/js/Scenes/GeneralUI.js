@@ -20,8 +20,11 @@ class SceneGeneralUI extends Phaser.Scene {
 
     create() {
         // Display ping in the top-center of the screen.
-        this.text_ping = this.add.text(this.cw/2, 10, "", this.default_font)
-            .setOrigin(0.5);
+        this.text_ping = this.add.text(
+            this.cw/2, 10,
+            "Connecting to server...",
+            this.default_font
+        ).setOrigin(0.5);
 
         // Make sure the General UI scene is shown above this one.
         this.scene.bringToTop("general ui");
@@ -32,11 +35,11 @@ class SceneGeneralUI extends Phaser.Scene {
      //                                                   CUSTOM FUNCTIONS  //
     //---------------------------------------------------------------------//
     setPing(ping) {
-        if (typeof ping == "number") {
+        if (ping >= 0) {
             this.text_ping.text = "Ping: " + ping.toString() + "ms";
         }
         else {
-            this.text_ping.text = ping;
+            this.text_ping.text = "DISCONNECTED. Attempting to reconnect...";
         }
     }
 }

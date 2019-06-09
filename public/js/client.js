@@ -29,7 +29,7 @@ $(() => {
 
     socket.on("disconnect", () => {
         connected = false;
-        game.scene.getScene("general ui").setPing("DISCONNECTED");
+        game.scene.getScene("general ui").setPing(-1);
     });
 
 
