@@ -109,7 +109,7 @@ class SceneLogin extends Phaser.Scene {
         this.login_bg.fillStyle(0x000000, 0.5);
         this.login_bg.fillRoundedRect(
             this.cw/2 - 175, 200,
-            350, 100,
+            350, 120,
             20
         );
 
@@ -117,7 +117,7 @@ class SceneLogin extends Phaser.Scene {
         this.login_bg_stroke.lineStyle(1, 0xFFFFFF, 1);
         this.login_bg_stroke.strokeRoundedRect(
             this.cw/2 - 175, 200,
-            350, 100,
+            350, 120,
             20
         );
 
@@ -137,10 +137,59 @@ class SceneLogin extends Phaser.Scene {
             this.cw/2 - 60, 240, "", this.default_font
         );
 
+        // Buttons.
+        this.btn_login = this.add.graphics();
+        this.btn_login.fillStyle(0x000000, 0.5);
+        this.btn_login.fillRoundedRect(
+            this.cw/2 - 110, 275,
+            110, 30,
+            5
+        );
+
+        this.btn_login_text = this.add.text(
+            this.cw/2 - 55, 290, "Login", this.default_font
+        ).setOrigin(0.5).setInteractive();
+
+        this.btn_register = this.add.graphics();
+        this.btn_register.fillStyle(0x000000, 0.5);
+        this.btn_register.fillRoundedRect(
+            this.cw/2 + 10, 275,
+            110, 30,
+            5
+        );
+
+        this.btn_register_text = this.add.text(
+            this.cw/2 + 65, 290, "Register", this.default_font
+        ).setOrigin(0.5).setInteractive();
+
+        // Button interaction.
+        this.btn_login_text.on("pointerover", () => {
+            this.btn_login_text.setStyle({ color: "#FFCC88" });
+        });
+        this.btn_login_text.on("pointerout", () => {
+            this.btn_login_text.setStyle({ color: "#FFFFFF" });
+        });
+        this.btn_login_text.on("pointerdown", () => {
+            socket.emit("login", {
+                "username": this.username_field.text,
+                "password": this.password_field.text
+            });
+        });
+
+        this.btn_register_text.on("pointerover", () => {
+            this.btn_register_text.setStyle({ color: "#FFCC88" });
+        });
+        this.btn_register_text.on("pointerout", () => {
+            this.btn_register_text.setStyle({ color: "#FFFFFF" });
+        });
+        this.btn_register_text.on("pointerdown", () => {
+            document.location.href = "/register";
+        });
+
         // Allow user to click the login prompt to focus it.
         this.login_prompt_interact = this.add.zone(
-            this.cw/2, 250,
-            350, 100
+            this.cw/2, 235,
+            350, 65
         ).setInteractive();
 
         this.input.on("gameobjectup", (pointer, game_object) => {
@@ -155,7 +204,9 @@ class SceneLogin extends Phaser.Scene {
                 this.background,
                 this.login_bg_stroke,
                 this.username_label,
-                this.password_label
+                this.password_label,
+                this.btn_login_text,
+                this.btn_register_text
             ],
             ease: "Sine.easeInOut",
             duration: 3000,
