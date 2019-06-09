@@ -108,5 +108,8 @@ class SceneLogin extends Phaser.Scene {
                 getEnd: () => 1
             }
         });
+
+        // Make sure the General UI scene is shown above this one.
+        this.scene.bringToTop("general ui");
     }
 }

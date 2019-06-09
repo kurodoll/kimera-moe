@@ -25,9 +25,6 @@ class SceneGeneralUI extends Phaser.Scene {
             "Connecting to server...",
             this.default_font
         ).setOrigin(0.5);
-
-        // Make sure the General UI scene is shown above this one.
-        this.scene.bringToTop("general ui");
     }
 
 
