@@ -14,9 +14,25 @@ class Manager:
 
         log("Manager", "Initialized Manager", timer_end="manager")
 
+    # Used when a new entity needs to be created. Not only creates the entity,
+    # but also adds that entity to the level it's on, if applicable.
+    def newEntity(self, base):
+        entity = Entity.Entity(base)
+        self.entities[entity.id] = entity
+
+        if "position" in entity.components:
+            on_level = entity.getComponent("position").data["level"]
+            level_data = self.getLevel(on_level).getComponent("level").data
+
+            if "entities" not in level_data:
+                level_data["entities"] = []
+
+            level_data["entities"].append(entity.id)
+
+        return entity
+
     def newCharacter(self, details):
-        new_ent = Entity.Entity("player")
-        self.entities[new_ent.id] = new_ent
+        new_ent = self.newEntity("player")
 
         # Set details based on character creation.
         bio_component = new_ent.getComponent("bio")
@@ -31,6 +47,12 @@ class Manager:
     def getEntity(self, entity_id):
         if entity_id in self.entities:
             return self.entities[entity_id]
+
+        log(
+            "Manager",
+            f"Requested non-existent entity: {entity_id}",
+            "warning"
+        )
 
         return None
 

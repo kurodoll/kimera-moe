@@ -84,6 +84,10 @@ $(() => {
         game.scene.getScene("game").addLevel(level);
     });
 
+    socket.on("entity data", (entities) => {
+        game.scene.getScene("game").updateEntities(entities);
+    });
+
 
       //---------------------------------------------------------------------//
      //                                         JQUERY BROWSER INTERACTION  //

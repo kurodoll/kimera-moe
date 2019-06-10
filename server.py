@@ -233,6 +233,25 @@ def request_level(sid, level_id):
     sio.emit("level", level.toJSON(), room=sid)
 
 
+@sio.on("request entities")
+def request_entities(sid, entities):
+    log(
+        "server.py",
+        f"Entities requested: '{entities}' by {clients[sid]['username']}",
+        "debug"
+    )
+
+    entity_data = {}
+
+    for e in entities:
+        entity = GameManager.getEntity(e)
+
+        if entity:
+            entity_data[entity.id] = entity.toJSON()
+
+    sio.emit("entity data", entity_data, room=sid)
+
+
 # --------------------------------------------------------------------------- #
 #                                                                         RUN #
 # --------------------------------------------------------------------------- #

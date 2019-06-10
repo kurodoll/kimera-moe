@@ -13,9 +13,13 @@ class SceneGame extends Phaser.Scene {
         this.levels = {};
         this.active_level = null;
 
+        this.entities = {}; // Known entities
+
         // Load image data.
         this.load.image("tileset cave", "/graphics/tilesets/cave");
         this.load.json("tileset cave data", "/data/tilesets/cave");
+
+        this.load.image("player", "/graphics/sprites/player");
 
         // Loading bar.
         const progress = this.add.graphics();
@@ -39,6 +43,7 @@ class SceneGame extends Phaser.Scene {
     //---------------------------------------------------------------------//
     setCharacterEntity(character) {
         this.character_entity = character;
+        this.entities[character.id] = character;
 
         // Check if the level the player's character on is loaded locally. If
         // it isn't, it needs to be requested from the server.
@@ -58,10 +63,26 @@ class SceneGame extends Phaser.Scene {
         }
     }
 
+    // Update existing/add new entities sent from the server.
+    updateEntities(entities) {
+        for (const entity_id in entities) {
+            this.entities[entity_id] = entities[entity_id];
+        }
+
+        // Render entities to ensure that their changes are shown, and that new
+        // ones appear.
+        this.renderEntities(this.active_level);
+    }
+
 
     // ========================================================= Rendering
     renderLevel(level_id) {
         const level = this.levels[level_id];
+
+        if (!level) {
+            console.error("Tried to render an unknown level");
+            return;
+        }
 
         // Create a tilemap for the level.
         const map = this.make.tilemap({
@@ -105,5 +126,94 @@ class SceneGame extends Phaser.Scene {
         );
 
         this.cameras.main.setZoom(level.zoom);
+
+        // Now handle rendering the entities that are present on the level.
+        this.renderEntities(level_id);
+    }
+
+    renderEntities(level_id) {
+        const level = this.levels[level_id];
+
+        if (!level) {
+            console.error("Tried to render entities of an unknown level");
+            return;
+        }
+
+        // First make sure that we have the data of all the entities on the
+        // level.
+        let unknown_entities = [];
+
+        for (let i = 0; i < level.entities.length; i++) {
+            const entity_id = level.entities[i];
+
+            if (!this.entities[entity_id]) {
+                unknown_entities.push(entity_id);
+            }
+        }
+
+        // If there are any entities we need, request their data from the
+        // server.
+        if (unknown_entities.length > 0) {
+            socket.emit("request entities", unknown_entities);
+        }
+
+        // Now render the entities (that we have the data of).
+        for (let i = 0; i < level.entities.length; i++) {
+            const entity_id = level.entities[i];
+
+            // Check whether we have the entity data.
+            if (this.entities[entity_id]) {
+                const entity = this.entities[entity_id];
+
+                // The entity only needs to be rendered if it actually has a
+                // sprite component.
+                if ("sprite" in entity.components) {
+                    const pixel_x = entity.components.position.x *
+                        level.tile_width;
+                    const pixel_y = entity.components.position.y *
+                        level.tile_height;
+
+                    if (entity.image) {
+                        // If the entity already has a sprite created for it,
+                        // just move it. But only move it if its position has
+                        // actually changed.
+                        if ( pixel_x != entity.image.x ||
+                             pixel_y != entity.image.y )
+                        {
+                            entity.image.tween = this.add.tween({
+                                targets: [ entity.image ],
+                                ease: 'Sine.easeInOut',
+                                duration: 100,
+                                delay: 0,
+                                x: {
+                                    getStart: () => entity.image.x,
+                                    getEnd: () => pixel_x
+                                },
+                                y: {
+                                    getStart: () => entity.image.y,
+                                    getEnd: () => pixel_y
+                                }
+                            });
+                        }
+                    }
+                    else {
+                        // We need to create a sprite for this entity.
+                        entity.image = this.add.sprite(
+                            pixel_x,
+                            pixel_y,
+                            entity.components.sprite.sprite
+                        ).setOrigin(0, 0);
+                    }
+                }
+            }
+        }
+
+        // Have the camera follow the sprite of the player's character.
+        this.cameras.main.startFollow(
+            this.character_entity.image, 
+            false,    // Round Pixels (sub-pixel adjustment)
+            0.1, 0.1, // Camera Lerp (smooth movement)
+            -(this.character_entity.image.width/2),   // X Offset
+            -(this.character_entity.image.height/2)); // Y Offset
     }
 }
