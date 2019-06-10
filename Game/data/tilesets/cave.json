@@ -1,5 +1,9 @@
 {
     "empty": 0,
     "ground": 1,
-    "wall": 2
+    "ground_rough": 2,
+    "grass": 3,
+    "tall_grass": 4,
+    "flower": 5,
+    "wall": 6
 }

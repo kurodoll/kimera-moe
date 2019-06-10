@@ -11,6 +11,10 @@
     "tileset": "cave",
     "generator": "cave",
     "tile_weights": {
-        "ground": 100
+        "ground": 700,
+        "ground_rough": 800,
+        "grass": 900,
+        "tall_grass": 995,
+        "flower": 1000
     }
 }

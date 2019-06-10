@@ -93,7 +93,7 @@ class LevelSys:
             # Use a random walk algorithm to create a random floor plan.
             for i in range(0, tiles_to_place):
                 # Determine a random (weighted) tile type to place.
-                tile_prob = random.randint(1, 100)
+                tile_prob = random.randint(1, 1000)
 
                 for t in level_data["tile_weights"]:
                     if tile_prob <= level_data["tile_weights"][t]:
