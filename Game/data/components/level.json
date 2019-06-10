@@ -7,6 +7,10 @@
     "tile_width": 15,
     "tile_height": 15,
     "zoom": 1,
+
     "tileset": "default",
-    "generator": "default"
+    "generator": "default",
+    "tile_weights": {
+        "ground": 100
+    }
 }

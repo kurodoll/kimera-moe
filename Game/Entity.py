@@ -80,13 +80,13 @@ class Entity:
 
         return None
 
-    def toJSON(self):
+    def toJSON(self, condensed=False):
         result = {
             "id": self.id,
             "components": {}
         }
 
         for c in self.components:
-            result["components"][c] = self.components[c].toJSON()
+            result["components"][c] = self.components[c].toJSON(condensed)
 
         return result

@@ -74,7 +74,7 @@ class SceneCharacterSelect extends Phaser.Scene {
                 this.name_field.text = this.name_field.text.slice(0, -1);
             }
             else if (key.keyCode != 9) { // DON'T allow tab
-                this.console_input.text += key.key;
+                this.name_field.text += key.key;
             }
         }
     }

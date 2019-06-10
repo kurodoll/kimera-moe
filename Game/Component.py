@@ -59,5 +59,28 @@ class Component:
             "debug(2)"
         )
 
-    def toJSON(self):
-        return self.data
+    def toJSON(self, condensed=False):
+        # If condensed is specified, we should not return the full extent of
+        # data if it is too much. This is used when returning JSON to be used
+        # for printing.
+        if condensed:
+            ret = {}
+
+            for d in self.data:
+                if isinstance(self.data[d], list) and len(self.data[d]) > 30:
+                    ret[d] = [
+                        self.data[d][0],
+                        self.data[d][1],
+                        self.data[d][2],
+                        self.data[d][3],
+                        self.data[d][4],
+                        str(len(self.data[d]) - 5) + " more items..."
+                    ]
+
+                else:
+                    ret[d] = self.data[d]
+
+            return ret
+
+        else:
+            return self.data

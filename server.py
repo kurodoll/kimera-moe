@@ -147,7 +147,7 @@ def command(sid, command_text):
 
                 if ent:
                     response = f"[json] Data of Entity#{ent.id}:\n"
-                    response += pp.pformat(ent.toJSON())
+                    response += pp.pformat(ent.toJSON(True))
 
                     sio.emit("message", response, room=sid)
 
