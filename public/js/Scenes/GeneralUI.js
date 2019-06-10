@@ -24,6 +24,12 @@ class SceneGeneralUI extends Phaser.Scene {
             color: "#808080"
         };
 
+        this.highlight_font = {
+            fontFamily: "Verdana",
+            fontSize: 10,
+            color: "#FFC080"
+        };
+
         this.code_font = {
             fontFamily: "Consolas",
             fontSize: 11,
@@ -149,7 +155,10 @@ class SceneGeneralUI extends Phaser.Scene {
     message(message) {
         let font_to_use = this.default_font;
 
-        if (message.substring(9, 15) == "[json]") {
+        if (message.substring(0, 8) == "[server]") {
+            font_to_use = this.highlight_font;
+        }
+        else if (message.substring(9, 15) == "[json]") {
             font_to_use = this.code_font;
         }
 
