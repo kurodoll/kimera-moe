@@ -154,6 +154,30 @@ def command(sid, command_text):
                 else:
                     sio.emit("message", "No such entity!", room=sid)
 
+            # Retrieve the data of a specific entity, formatted for level data.
+            elif command_tokens[1] == "level":
+                ent = GameManager.getEntity(int(command_tokens[2]))
+
+                if ent:
+                    if ent.getComponent("level"):
+                        level = ent.getComponent("level")
+                        level_str = f"[json] Level of Entity#{ent.id}:\n"
+
+                        i = 0
+
+                        for t in level.data["tiles"]:
+                            level_str += t[0]
+
+                            i += 1
+                            if i == level.data["width"]:
+                                level_str += "\n"
+                                i = 0
+
+                    sio.emit("message", level_str, room=sid)
+
+                else:
+                    sio.emit("message", "No such entity!", room=sid)
+
 
 # ============================================================ Login & Register
 @sio.on("register")
