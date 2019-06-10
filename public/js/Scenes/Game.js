@@ -60,6 +60,9 @@ class SceneGame extends Phaser.Scene {
         if (this.character_entity.components.position.level == level_id) {
             this.active_level = level_id;
             this.renderLevel(this.active_level);
+
+            this.game.scene.getScene("general ui").message("Entered level " +
+                level.components.level.name);
         }
     }
 
