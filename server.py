@@ -18,7 +18,8 @@ import socketio
 config = {
     "server": {
         "default_port": 3000,
-        "motd": "Welcome to the Official Kimera M.O.E. server!"
+        "motd": "Welcome to the Official Kimera M.O.E. server!\n\
+            Type /chat <message> to global chat"
     },
     "files": {
         "static_files": "config/static_files.json"
@@ -96,6 +97,23 @@ def command(sid, command_text):
     )
 
     command_tokens = command_text.split(" ")
+
+    if len(command_tokens) >= 2:
+        if command_tokens[0] == "/chat":
+            if sid in clients:
+                if clients[sid]["logged_in"]:
+                    sio.emit("chat", {
+                        "type": "Global",
+                        "from": clients[sid]["username"],
+                        "message": command_text[6:]
+                    })
+
+                else:
+                    sio.emit(
+                        "message",
+                        "You must be logged in to chat",
+                        room=sid
+                    )
 
     if len(command_tokens) == 2:
         if command_tokens[0] == "/gm":

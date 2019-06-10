@@ -30,6 +30,12 @@ class SceneGeneralUI extends Phaser.Scene {
             color: "#808080"
         };
 
+        this.chat_font = {
+            fontFamily: "Verdana",
+            fontSize: 10,
+            color: "#80FFC0"
+        };
+
         this.message_history = [];
         this.message_history_cur_y = 7;
 
@@ -153,6 +159,34 @@ class SceneGeneralUI extends Phaser.Scene {
             this.cw + 70, this.message_history_cur_y,
             message,
             font_to_use
+        );
+
+        this.message_history.push({
+            "timestamp": this.add.text(
+                this.cw + 10, this.message_history_cur_y,
+                new Date().toISOString().substring(11, 19),
+                this.subdued_font
+            ),
+            "text": message_text
+        });
+
+        // The y coordinate of the latest message needs to be updated.
+        this.message_history_cur_y += message_text.displayHeight + 5;
+
+        // If the text is going out of the screen, scroll the camera down so
+        // that the latest message can always be seen.
+        const message_history_bottom = this.coords_console.h - 30;
+        this.console_camera.scrollY =
+            this.message_history_cur_y - message_history_bottom;
+    }
+
+    chatMessage(details) {
+        // Add canvas text objects to the history. To scroll back in history,
+        // a camera will be used.
+        const message_text = this.add.text(
+            this.cw + 70, this.message_history_cur_y,
+            "[" + details.type + " Chat] " + details.from + ": " + details.message,
+            this.chat_font
         );
 
         this.message_history.push({

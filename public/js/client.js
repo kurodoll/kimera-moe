@@ -59,6 +59,10 @@ $(() => {
         game.scene.getScene("general ui").message("[server] " + message);
     });
 
+    socket.on("chat", (details) => {
+        game.scene.getScene("general ui").chatMessage(details);
+    });
+
 
     //============================================================ Account
     socket.on("login success", () => {
