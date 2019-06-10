@@ -31,13 +31,13 @@ $(() => {
     //========================================= Connection & Disconnection
     socket.on("connect", () => {
         connected = true;
-        game.scene.getScene("general ui").message("Connected to server.");
+        game.scene.getScene("general ui").message("Connected to server");
     });
 
     socket.on("disconnect", () => {
         connected = false;
         game.scene.getScene("general ui").setPing(-1);
-        game.scene.getScene("general ui").message("Disconnected from server.");
+        game.scene.getScene("general ui").message("Disconnected from server");
     });
 
 

@@ -21,13 +21,13 @@ class SceneGeneralUI extends Phaser.Scene {
         this.subdued_font = {
             fontFamily: "Verdana",
             fontSize: 10,
-            color: "#888888"
+            color: "#808080"
         };
 
         this.code_font = {
             fontFamily: "Consolas",
             fontSize: 11,
-            color: "#888888"
+            color: "#808080"
         };
 
         this.message_history = [];
@@ -58,7 +58,7 @@ class SceneGeneralUI extends Phaser.Scene {
 
         // Console window.
         this.console_bg = this.add.graphics();
-        this.console_bg.fillStyle(0x111111, 0.8);
+        this.console_bg.fillStyle(0x101010, 0.8);
         this.console_bg.fillRect(
             this.coords_console.x,
             this.coords_console.y,

@@ -44,7 +44,7 @@ class SceneLogin extends Phaser.Scene {
         this.subdued_font = {
             fontFamily: "Verdana",
             fontSize: 15,
-            color: "#888888"
+            color: "#808080"
         };
 
         // Create a list of characters that are valid for text input.
@@ -164,7 +164,7 @@ class SceneLogin extends Phaser.Scene {
 
         // Button interaction.
         this.btn_login_text.on("pointerover", () => {
-            this.btn_login_text.setStyle({ color: "#FFCC88" });
+            this.btn_login_text.setStyle({ color: "#FFC080" });
         });
         this.btn_login_text.on("pointerout", () => {
             this.btn_login_text.setStyle({ color: "#FFFFFF" });
@@ -177,7 +177,7 @@ class SceneLogin extends Phaser.Scene {
         });
 
         this.btn_register_text.on("pointerover", () => {
-            this.btn_register_text.setStyle({ color: "#FFCC88" });
+            this.btn_register_text.setStyle({ color: "#FFC080" });
         });
         this.btn_register_text.on("pointerout", () => {
             this.btn_register_text.setStyle({ color: "#FFFFFF" });
@@ -231,14 +231,14 @@ class SceneLogin extends Phaser.Scene {
                 this.username_label.setStyle({ color: "#FFFFFF" });
             }
             else {
-                this.username_label.setStyle({ color: "#888888" });
+                this.username_label.setStyle({ color: "#808080" });
             }
 
             if (active_ui_element == "login password") {
                 this.password_label.setStyle({ color: "#FFFFFF" });
             }
             else {
-                this.password_label.setStyle({ color: "#888888" });
+                this.password_label.setStyle({ color: "#808080" });
             }
         }, 100);
 
