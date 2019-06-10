@@ -56,6 +56,8 @@ def log(caller, message, log_level="log", timer_start="", timer_end=""):
         print(colorama.Fore.RED, end="")
     elif log_level == "warning":
         print(colorama.Fore.YELLOW, end="")
+    elif log_level == "log":
+        print(colorama.Fore.GREEN, end="")
     elif log_level == "debug":
         print(colorama.Fore.CYAN, end="")
     elif log_level == "debug(2)":
