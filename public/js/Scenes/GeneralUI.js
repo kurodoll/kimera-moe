@@ -57,14 +57,14 @@ class SceneGeneralUI extends Phaser.Scene {
         // Define where UI elements should go.
         this.coords_console = {
             x: this.cw - 710,
-            y: this.ch - 310,
+            y: this.ch - 320,
             w: 700,
             h: 300
         };
 
-        // Display ping in the bottom-left of the screen.
+        // Display ping in the bottom-right of the screen.
         this.text_ping = this.add.text(
-            10, this.ch - 20,
+            this.cw - 700, this.ch - 17,
             "Connecting to server...",
             this.default_font
         );

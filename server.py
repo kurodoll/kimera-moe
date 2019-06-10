@@ -161,12 +161,21 @@ def command(sid, command_text):
                 if ent:
                     if ent.getComponent("level"):
                         level = ent.getComponent("level")
-                        level_str = f"[json] Level of Entity#{ent.id}:\n"
+                        level_str = f"[json] Level of Entity#{ent.id}:\n\n"
 
                         i = 0
 
                         for t in level.data["tiles"]:
-                            level_str += t[0]
+                            if t[0] == "e":
+                                # Ignore empty tiles.
+                                level_str += " "
+                            elif t[0] == "g":
+                                # Denote ground tiles with a dot.
+                                level_str += "."
+                            else:
+                                level_str += t[0]
+
+                            level_str += " "
 
                             i += 1
                             if i == level.data["width"]:
