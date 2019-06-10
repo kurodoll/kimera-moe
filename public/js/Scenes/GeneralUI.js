@@ -56,7 +56,7 @@ class SceneGeneralUI extends Phaser.Scene {
             h: 300
         };
 
-        // Display ping in the top-center of the screen.
+        // Display ping in the bottom-left of the screen.
         this.text_ping = this.add.text(
             10, this.ch - 20,
             "Connecting to server...",
