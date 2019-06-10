@@ -80,6 +80,9 @@ def disconnect(sid):
     if sid in clients:
         clients[sid]["online"] = False
 
+        if "character" in clients[sid]:
+            GameManager.destroyEntity(clients[sid]["character"].id)
+
 
 # ===================================================================== General
 @sio.on("my ping")

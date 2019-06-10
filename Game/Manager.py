@@ -72,3 +72,25 @@ class Manager:
         self.levels[level_id] = level_ent
 
         return level_ent
+
+    def destroyEntity(self, entity_id):
+        if entity_id in self.entities:
+            pos_comp = self.entities[entity_id].getComponent("position")
+
+            # Remove the entity from the level it is on.
+            if pos_comp:
+                level = self.levels[pos_comp.data["level"]]
+
+                entity_list = level.getComponent("level").data["entities"]
+                if entity_id in entity_list:
+                    entity_list.remove(entity_id)
+
+                entity_named_list = level.getComponent("level").data["entities_named"]  # noqa
+                for k, v in entity_named_list.items():
+                    if v == entity_id:
+                        del entity_named_list[k]
+
+            log("Manager", f"Deleted Entity#{entity_id}", "debug(2)")
+
+            # Actually delete the entity object.
+            del self.entities[entity_id]
