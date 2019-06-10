@@ -16,5 +16,7 @@
         "grass": 900,
         "tall_grass": 995,
         "flower": 1000
-    }
+    },
+
+    "sight_multiplier": 0.5
 }

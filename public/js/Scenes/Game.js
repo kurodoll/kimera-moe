@@ -75,7 +75,7 @@ class SceneGame extends Phaser.Scene {
     }
 
 
-    // ========================================================= Rendering
+    // ============================================================== Rendering
     renderLevel(level_id) {
         const level = this.levels[level_id];
 
@@ -215,5 +215,75 @@ class SceneGame extends Phaser.Scene {
             0.1, 0.1, // Camera Lerp (smooth movement)
             -(this.character_entity.image.width/2),   // X Offset
             -(this.character_entity.image.height/2)); // Y Offset
+
+        // Update sight of the player character.
+        this.determineSight(
+            level_id,
+            {
+                x: this.character_entity.components.position.x,
+                y: this.character_entity.components.position.y,
+            },
+            this.character_entity.components.stats.sight *
+                level.sight_multiplier
+        );
+    }
+
+
+    // ======================================================== Rendering (LOS)
+    // Darkens and hides tiles that are distant/hidden from a specified
+    // position. sight_level is how well the entity can see.
+    determineSight(level_id, from, sight_level) {
+        const level = this.levels[level_id];
+
+        if (!level) {
+            console.error("Tried to determine sight on an unknown level");
+            return;
+        }
+
+        for (let x = 0; x < level.width; x++) {
+            for (let y = 0; y < level.height; y++) {
+                // Ignore empty tiles.
+                if (level.tiles[y * level.width + x] == "empty") {
+                    continue;
+                }
+
+                // Tint the tile darker based on its distance and how good the
+                // sight level is.
+                const distance = Math.sqrt(
+                    Math.pow(Math.abs(x - from.x), 2) +
+                        Math.pow(Math.abs(y - from.y), 2)
+                );
+
+                let brightness = 1;
+                if (distance > sight_level) {
+                    brightness = 1 / (distance / sight_level);
+                }
+
+                const hex = this.rgbToHex(
+                    Math.round(255 * brightness),
+                    Math.round(255 * brightness),
+                    Math.round(255 * brightness)
+                );
+                level.layer.getTileAt(x, y).tint = hex;
+            }
+        }
+    }
+
+
+      //---------------------------------------------------------------------//
+     //                                                   HELPER FUNCTIONS  //
+    //---------------------------------------------------------------------//
+    componentToHex(c) {
+        const hex = c.toString(16);
+        return hex.length == 1 ? "0" + hex : hex;
+    }
+      
+    rgbToHex(r, g, b) {
+        return parseInt(
+            this.componentToHex(r) +
+                this.componentToHex(g) +
+                this.componentToHex(b),
+            16
+        );
     }
 }

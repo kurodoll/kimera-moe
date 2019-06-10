@@ -6,6 +6,8 @@
         },
         "sprite": {
             "sprite": "player"
-        }
+        },
+
+        "stats": {}
     }
 }
