@@ -33,6 +33,8 @@ class SceneGeneralUI extends Phaser.Scene {
         this.message_history = [];
         this.message_history_cur_y = 7;
 
+        this.console_maximized = false;
+
         // Create a list of characters that are valid for text input.
         this.valid_keys = [ 32 ]; // 32 = Space
 
@@ -47,11 +49,16 @@ class SceneGeneralUI extends Phaser.Scene {
 
     create() {
         // Define where UI elements should go.
-        this.coords_console = { x: 0, y: this.ch - 300, w: this.cw, h: 300 };
+        this.coords_console = {
+            x: this.cw - 710,
+            y: this.ch - 310,
+            w: 700,
+            h: 300
+        };
 
         // Display ping in the top-center of the screen.
         this.text_ping = this.add.text(
-            this.cw - 300, 7,
+            10, this.ch - 20,
             "Connecting to server...",
             this.default_font
         );
@@ -146,8 +153,7 @@ class SceneGeneralUI extends Phaser.Scene {
             this.cw + 70, this.message_history_cur_y,
             message,
             font_to_use
-        ).setWordWrapWidth(this.coords_console.w - 80)
-         .setCrop(0, 0, this.coords_console.w - 80, this.ch);
+        );
 
         this.message_history.push({
             "timestamp": this.add.text(
@@ -164,11 +170,29 @@ class SceneGeneralUI extends Phaser.Scene {
         // If the text is going out of the screen, scroll the camera down so
         // that the latest message can always be seen.
         const message_history_bottom = this.coords_console.h - 30;
+        this.console_camera.scrollY =
+            this.message_history_cur_y - message_history_bottom;
+    }
 
-        if (this.message_history_cur_y > message_history_bottom) {
-            this.console_camera.scrollY =
-                this.message_history_cur_y - message_history_bottom;
-        }
+    moveConsole(x, y, w, h) {
+        this.coords_console = { x: x, y: y, w: w, h: h };
+
+        this.console_bg.destroy();
+        this.console_bg = this.add.graphics();
+        this.console_bg.fillStyle(0x101010, 0.8);
+        this.console_bg.fillRect(x, y, w, h);
+
+        this.console_input.x = x + 10;
+        this.console_input.y = y + h - 20;
+        this.console_input.setDepth(1);
+
+        this.console_interact.x = x;
+        this.console_interact.y = y;
+        this.console_interact.w = w;
+        this.console_interact.h = h;
+
+        this.console_camera.setPosition(x, y);
+        this.console_camera.setSize(w, h);
     }
 
     keypress(key) {
@@ -176,7 +200,30 @@ class SceneGeneralUI extends Phaser.Scene {
             if (key.keyCode == 8) { // Backspace
                 this.console_input.text = this.console_input.text.slice(0, -1);
             }
-            else if (key.keyCode != 9) { // DON'T allow tab
+            else if (key.keyCode == 9) {
+                if (this.console_maximized) {
+                    this.coords_console = this.coords_console_old;
+                    this.console_maximized = false;
+
+                    this.moveConsole(
+                        this.coords_console.x,
+                        this.coords_console.y,
+                        this.coords_console.w,
+                        this.coords_console.h
+                    );
+                }
+                else {
+                    this.coords_console_old = this.coords_console;
+                    this.console_maximized = true;
+
+                    this.moveConsole(0, 0, this.cw, this.ch);
+                }
+
+                const message_history_bottom = this.coords_console.h - 30;
+                this.console_camera.scrollY =
+                    this.message_history_cur_y - message_history_bottom;
+            }
+            else {
                 this.console_input.text += key.key;
             }
         }
