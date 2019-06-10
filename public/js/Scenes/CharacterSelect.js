@@ -40,7 +40,7 @@ class SceneCharacterSelect extends Phaser.Scene {
         );
 
 
-        // ===================================================== KEYBOARD INPUT
+        // ==================================================== KEYBOARD INPUT
         active_ui_element = "character select";
 
         this.input.keyboard.on("keydown", (key) => {

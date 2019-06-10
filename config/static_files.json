@@ -42,5 +42,15 @@
     "/graphics/art/login_bg": {
         "content_type": "image/jpeg",
         "filename": "public/graphics/art/login_bg.jpg"
+    },
+
+
+    "/graphics/tilesets/cave": {
+        "content_type": "image/png",
+        "filename": "public/graphics/tilesets/cave.png"
+    },
+    "/data/tilesets/cave": {
+        "content_type": "text/json",
+        "filename": "Game/data/tilesets/cave.json"
     }
 }

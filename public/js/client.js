@@ -10,12 +10,15 @@ $(() => {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect, SceneGame ]
+        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect, SceneGame ],
+        render: {
+            "pixelArt": true
+        }
     };
 
     const game = new Phaser.Game(phaser_config);
     game.scene.start("general ui");
-    game.scene.start("login");
+    game.scene.start("game"); // Will switch to login scene when preloaded
 
 
       //---------------------------------------------------------------------//
@@ -73,9 +76,7 @@ $(() => {
 
     //========================================================== Game Data
     socket.on("character entity", (character) => {
-        game.scene.stop("character select");
-        game.scene.start("game");
-
+        game.scene.switch("character select", "game");
         game.scene.getScene("game").setCharacterEntity(character);
     });
 
