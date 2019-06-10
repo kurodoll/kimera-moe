@@ -155,11 +155,11 @@ class SceneGeneralUI extends Phaser.Scene {
     message(message) {
         let font_to_use = this.default_font;
 
-        if (message.substring(0, 8) == "[server]") {
-            font_to_use = this.highlight_font;
-        }
-        else if (message.substring(9, 15) == "[json]") {
+        if (message.substring(9, 15) == "[json]") {
             font_to_use = this.code_font;
+        }
+        else if (message.substring(0, 8) == "[server]") {
+            font_to_use = this.highlight_font;
         }
 
         // Add canvas text objects to the history. To scroll back in history,
