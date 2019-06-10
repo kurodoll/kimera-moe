@@ -6,8 +6,10 @@ import random
 
 
 class LevelSys:
-    def __init__(self):
+    def __init__(self, Manager):
         log("LevelSys", "Initializing LevelSys", timer_start="LevelSys")
+
+        self.Manager = Manager
 
         try:
             filename = "Game/data/world/defined_levels.json"
@@ -56,7 +58,7 @@ class LevelSys:
             level_comp = level_ent.getComponent("level")
 
             if "generator" in level_comp.data:
-                tiles = self.generateLevel(level_comp.data)
+                tiles = self.generateLevel(level_comp.data, level_id)
 
                 level_comp.updateData({
                     "tiles": tiles
@@ -66,7 +68,7 @@ class LevelSys:
             log("LevelSys", f"Loaded level '{level_id}'", timer_end=level_id)
             return level_ent
 
-    def generateLevel(self, level_data):
+    def generateLevel(self, level_data, level_id):
         log(
             f"LevelSys",
             f"Generating level of type '{level_data['generator']}'",
@@ -144,6 +146,19 @@ class LevelSys:
                                 tiles[y * level_data["width"] + x] = "wall"
                                 break
 
+            # Place a spawn point somewhere.
+            spawn_tile_index = random.randint(0, len(open_tiles) - 1)
+            spawn_tile = open_tiles[spawn_tile_index]
+
+            spawn_entity = self.Manager.newEntity("spawn_point")
+            level_data["entities_named"]["spawn_point"] = spawn_entity.id
+
+            spawn_comp_pos = spawn_entity.getComponent("position").data
+            spawn_comp_pos["level"] = level_id
+            spawn_comp_pos["x"] = spawn_tile["x"]
+            spawn_comp_pos["y"] = spawn_tile["y"]
+
+            # Return the tile list.
             return tiles
 
     # Returns the 8 tiles around a given coordinate.

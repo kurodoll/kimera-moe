@@ -7,7 +7,7 @@ class Manager:
     def __init__(self):
         log("Manager", "Initializing Manager", timer_start="manager")
 
-        self.LevelSys = LevelSys.LevelSys()
+        self.LevelSys = LevelSys.LevelSys(self)
 
         self.entities = {}
         self.levels = {}
@@ -22,12 +22,10 @@ class Manager:
 
         if "position" in entity.components:
             on_level = entity.getComponent("position").data["level"]
-            level_data = self.getLevel(on_level).getComponent("level").data
 
-            if "entities" not in level_data:
-                level_data["entities"] = []
-
-            level_data["entities"].append(entity.id)
+            if on_level != "":
+                level_data = self.getLevel(on_level).getComponent("level").data
+                level_data["entities"].append(entity.id)
 
         return entity
 
@@ -35,12 +33,17 @@ class Manager:
         new_ent = self.newEntity("player")
 
         # Set details based on character creation.
-        bio_component = new_ent.getComponent("bio")
+        new_ent.getComponent("bio").updateData({
+            "name": details["name"]
+        })
 
-        if bio_component:
-            bio_component.updateData({
-                "name": details["name"]
-            })
+        # Set the player to the spawn point of the level they're starting on.
+        spawn_location = self.entities[self.getLevel(new_ent.getComponent("position").data["level"]).getComponent("level").data["entities_named"]["spawn_point"]].getComponent("position").data  # noqa
+
+        new_ent.getComponent("position").updateData({
+            "x": spawn_location["x"],
+            "y": spawn_location["y"]
+        })
 
         return new_ent
 

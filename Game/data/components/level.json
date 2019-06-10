@@ -12,5 +12,8 @@
     "generator": "default",
     "tile_weights": {
         "ground": 100
-    }
+    },
+
+    "entities": [],
+    "entities_named": {}
 }

@@ -1,7 +1,9 @@
 {
     "components": {
         "bio": {},
-        "position": {},
+        "position": {
+            "level": "new world cave"
+        },
         "sprite": {
             "sprite": "player"
         }
