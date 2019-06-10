@@ -1,0 +1,12 @@
+{
+    "id": "new world cave",
+    "name": "New World Cave",
+
+    "width": 50,
+    "height": 50,
+    "tile_width": 15,
+    "tile_height": 15,
+    "zoom": 2,
+    "tileset": "cave",
+    "generator": "cave"
+}

@@ -1,0 +1,12 @@
+{
+    "id": "",
+    "name": "",
+
+    "width": 10,
+    "height": 10,
+    "tile_width": 15,
+    "tile_height": 15,
+    "zoom": 1,
+    "tileset": "default",
+    "generator": "default"
+}

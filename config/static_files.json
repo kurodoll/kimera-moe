@@ -33,6 +33,10 @@
         "content_type": "text/javascript",
         "filename": "public/js/Scenes/CharacterSelect.js"
     },
+    "/js/scenes/game": {
+        "content_type": "text/javascript",
+        "filename": "public/js/Scenes/Game.js"
+    },
 
 
     "/graphics/art/login_bg": {

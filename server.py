@@ -181,7 +181,23 @@ def new_character(sid, details):
         "debug"
     )
 
-    GameManager.newCharacter(details)
+    character = GameManager.newCharacter(details)
+    clients[sid]["character"] = character
+
+    sio.emit("character entity", character.toJSON(), room=sid)
+
+
+# ============================================================= Client Requests
+@sio.on("request level")
+def request_level(sid, level_id):
+    log(
+        "server.py",
+        f"Level requested: '{level_id}' by {clients[sid]['username']}",
+        "debug"
+    )
+
+    level = GameManager.getLevel(level_id)
+    sio.emit("level", level.toJSON(), room=sid)
 
 
 # --------------------------------------------------------------------------- #

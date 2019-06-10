@@ -10,7 +10,7 @@ $(() => {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect ]
+        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect, SceneGame ]
     };
 
     const game = new Phaser.Game(phaser_config);
@@ -68,6 +68,19 @@ $(() => {
     socket.on("login success", () => {
         game.scene.switch("login", "character select");
         game.scene.getScene("general ui").message("Logged in successfully");
+    });
+
+
+    //========================================================== Game Data
+    socket.on("character entity", (character) => {
+        game.scene.stop("character select");
+        game.scene.start("game");
+
+        game.scene.getScene("game").setCharacterEntity(character);
+    });
+
+    socket.on("level", (level) => {
+        game.scene.getScene("game").addLevel(level);
     });
 
 
