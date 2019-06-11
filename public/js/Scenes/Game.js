@@ -279,10 +279,10 @@ class SceneGame extends Phaser.Scene {
         // Have the camera follow the sprite of the player's character.
         this.cameras.main.startFollow(
             this.character_entity.image, 
-            false,      // Round Pixels (sub-pixel adjustment)
-            0.09, 0.09, // Camera Lerp (smooth movement)
-            -(this.character_entity.image.width/2),   // X Offset
-            -(this.character_entity.image.height/2)); // Y Offset
+            false,    // Round Pixels (sub-pixel adjustment)
+            0.1, 0.1, // Camera Lerp (smooth movement)
+            -Math.floor(this.character_entity.image.width/2),   // X Offset
+            -Math.floor(this.character_entity.image.height/2)); // Y Offset
 
         // Update sight of the player character.
         this.determineSight(

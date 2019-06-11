@@ -6,7 +6,7 @@
     "height": 50,
     "tile_width": 15,
     "tile_height": 15,
-    "zoom": 2,
+    "zoom": 3,
 
     "tileset": "cave",
     "generator": "cave",
@@ -18,5 +18,5 @@
         "flower": 1000
     },
 
-    "sight_multiplier": 0.5
+    "sight_multiplier": 0.4
 }
