@@ -286,6 +286,7 @@ class SceneGeneralUI extends Phaser.Scene {
             this.console_bg.visible = false;
             this.console_input_cursor.visible = false;
             this.console_camera.visible = false;
+            this.console_interact.disableInteractive();
 
             if (this.message_history.length) {
                 this.console_latest_message.text = this.message_history[this.message_history.length - 1].text.text;
@@ -298,6 +299,7 @@ class SceneGeneralUI extends Phaser.Scene {
             this.console_input.visible = true;
             this.console_input_cursor.visible = true;
             this.console_camera.visible = true;
+            this.console_interact.setInteractive();
 
             this.console_latest_message.text = "Type ? for help";
 
