@@ -74,11 +74,17 @@ class SceneGeneralUI extends Phaser.Scene {
         this.status_bar_bg.fillStyle(0x000000, 0.9);
         this.status_bar_bg.fillRect(0, this.ch - 20, this.cw, this.ch);
 
-        // Display ping in the bottom-left of the screen.
+        // Display ping and server info in the bottom-left of the screen.
         this.text_ping = this.add.text(
             10, this.ch - 16,
             "Connecting to server...",
             this.default_font
+        );
+
+        this.server_info = this.add.text(
+            260, this.ch - 16,
+            "",
+            this.subdued_font
         );
 
         // Console window.
@@ -208,6 +214,10 @@ class SceneGeneralUI extends Phaser.Scene {
         else {
             this.text_ping.text = "DISCONNECTED. Attempting to reconnect...";
         }
+    }
+
+    serverInfo(details) {
+        this.server_info.text = "Online: " + details.users_online;
     }
 
     message(message) {

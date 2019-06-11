@@ -15,6 +15,8 @@ import socketio
 # --------------------------------------------------------------------------- #
 #                                                              IMPORTANT DATA #
 # --------------------------------------------------------------------------- #
+users_online = 0
+
 config = {
     "server": {
         "default_port": 3000,
@@ -62,6 +64,10 @@ clients = {}
 def connect(sid, env):
     log("server.py", f"Connected: {sid}", "debug (network)", timer_start=sid)
 
+    global users_online
+    users_online += 1
+    sio.emit("server info", {"users_online": users_online})
+
     clients[sid] = {
         "online": True,
         "logged_in": False,
@@ -75,6 +81,10 @@ def connect(sid, env):
 @sio.on("disconnect")
 def disconnect(sid):
     log("server.py", f"Disconnected: {sid}", "debug (network)", timer_end=sid)
+
+    global users_online
+    users_online -= 1
+    sio.emit("server info", {"users_online": users_online})
 
     if sid in clients:
         clients[sid]["online"] = False

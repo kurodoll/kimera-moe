@@ -43,6 +43,10 @@ $(() => {
         game.scene.getScene("general ui").message("Disconnected from server");
     });
 
+    socket.on("server info", (details) => {
+        game.scene.getScene("general ui").serverInfo(details);
+    });
+
 
     //============================================================ General
     // Send out a ping every second, to determine latency to the server.
