@@ -37,13 +37,13 @@ class SceneLogin extends Phaser.Scene {
         // Fonts.
         this.default_font = {
             fontFamily: "Verdana",
-            fontSize: 15,
-            color: "#FFFFFF"
+            fontSize: 10,
+            color: "#000000"
         };
 
         this.subdued_font = {
             fontFamily: "Verdana",
-            fontSize: 15,
+            fontSize: 10,
             color: "#808080"
         };
 
@@ -60,10 +60,23 @@ class SceneLogin extends Phaser.Scene {
     }
 
     create() {
+        this.cameras.main.setBackgroundColor(0xFFFFFF);
+
         // Background image.
         this.background = this.add.image(0, 0, "login bg").setOrigin(0, 0);
         this.background.displayWidth = this.cw;
         this.background.scaleY = this.background.scaleX;
+
+        this.add.tween({
+            targets: [ this.background ],
+            ease: "Sine.easeInOut",
+            duration: 3000,
+            delay: 0,
+            y: {
+                getStart: () => -this.ch,
+                getEnd: () => 0
+            }
+        });
 
         // Game title.
         WebFont.load({
@@ -79,7 +92,7 @@ class SceneLogin extends Phaser.Scene {
                         fontSize: 100,
                         color: "#FFFFFF"
                     }
-                ).setShadow(0, 0, "#000000", 5, false, true).setOrigin(0.5);
+                ).setShadow(0, 0, "#004080", 2, false, true).setOrigin(0.5);
 
                 const game_subtitle = this.add.text(
                     this.cw/2 + 160, 160,
@@ -87,9 +100,9 @@ class SceneLogin extends Phaser.Scene {
                     {
                         fontFamily: "Rajdhani",
                         fontSize: 30,
-                        color: "#FFFFFF"
+                        color: "#FFC0FF"
                     }
-                ).setShadow(0, 0, "#000000", 5, false, true).setOrigin(0.5);
+                ).setOrigin(0.5);
 
                 this.add.tween({
                     targets: [ game_title, game_subtitle ],
@@ -106,19 +119,10 @@ class SceneLogin extends Phaser.Scene {
 
         // Login prompt.
         this.login_bg = this.add.graphics();
-        this.login_bg.fillStyle(0x000000, 0.5);
-        this.login_bg.fillRoundedRect(
+        this.login_bg.fillGradientStyle(0x80C0FF, 0xFFFFFF, 0xFFFFFF, 0xFFC0FF, 0.5);
+        this.login_bg.fillRect(
             this.cw/2 - 175, 200,
-            350, 120,
-            20
-        );
-
-        this.login_bg_stroke = this.add.graphics();
-        this.login_bg_stroke.lineStyle(1, 0xFFFFFF, 1);
-        this.login_bg_stroke.strokeRoundedRect(
-            this.cw/2 - 175, 200,
-            350, 120,
-            20
+            350, 120
         );
 
         this.username_label = this.add.text(
@@ -139,7 +143,7 @@ class SceneLogin extends Phaser.Scene {
 
         // Buttons.
         this.btn_login = this.add.graphics();
-        this.btn_login.fillStyle(0x000000, 0.5);
+        this.btn_login.fillStyle(0xFFFFFF, 1);
         this.btn_login.fillRoundedRect(
             this.cw/2 - 115, 275,
             110, 30,
@@ -147,11 +151,11 @@ class SceneLogin extends Phaser.Scene {
         );
 
         this.btn_login_text = this.add.text(
-            this.cw/2 - 60, 290, "Login", this.default_font
+            this.cw/2 - 60, 290, "Login", this.subdued_font
         ).setOrigin(0.5).setInteractive();
 
         this.btn_register = this.add.graphics();
-        this.btn_register.fillStyle(0x000000, 0.5);
+        this.btn_register.fillStyle(0xFFFFFF, 1);
         this.btn_register.fillRoundedRect(
             this.cw/2 + 5, 275,
             110, 30,
@@ -159,15 +163,15 @@ class SceneLogin extends Phaser.Scene {
         );
 
         this.btn_register_text = this.add.text(
-            this.cw/2 + 60, 290, "Register", this.default_font
+            this.cw/2 + 60, 290, "Register", this.subdued_font
         ).setOrigin(0.5).setInteractive();
 
         // Button interaction.
         this.btn_login_text.on("pointerover", () => {
-            this.btn_login_text.setStyle({ color: "#FFC080" });
+            this.btn_login_text.setStyle({ color: "#000000" });
         });
         this.btn_login_text.on("pointerout", () => {
-            this.btn_login_text.setStyle({ color: "#FFFFFF" });
+            this.btn_login_text.setStyle({ color: "#808080" });
         });
         this.btn_login_text.on("pointerdown", () => {
             socket.emit("login", {
@@ -177,10 +181,10 @@ class SceneLogin extends Phaser.Scene {
         });
 
         this.btn_register_text.on("pointerover", () => {
-            this.btn_register_text.setStyle({ color: "#FFC080" });
+            this.btn_register_text.setStyle({ color: "#000000" });
         });
         this.btn_register_text.on("pointerout", () => {
-            this.btn_register_text.setStyle({ color: "#FFFFFF" });
+            this.btn_register_text.setStyle({ color: "#808080" });
         });
         this.btn_register_text.on("pointerdown", () => {
             document.location.href = "/register";
@@ -201,13 +205,14 @@ class SceneLogin extends Phaser.Scene {
         // Tweens.
         this.add.tween({
             targets: [
-                this.background,
-                this.login_bg_stroke,
+                this.login_bg,
                 this.username_label,
                 this.password_label,
                 this.username_field,
                 this.password_field,
+                this.btn_login,
                 this.btn_login_text,
+                this.btn_register,
                 this.btn_register_text
             ],
             ease: "Sine.easeInOut",
@@ -228,14 +233,14 @@ class SceneLogin extends Phaser.Scene {
         // Keep track of which UI element is in focus.
         setInterval(() => {
             if (active_ui_element == "login username") {
-                this.username_label.setStyle({ color: "#FFFFFF" });
+                this.username_label.setStyle({ color: "#000000" });
             }
             else {
                 this.username_label.setStyle({ color: "#808080" });
             }
 
             if (active_ui_element == "login password") {
-                this.password_label.setStyle({ color: "#FFFFFF" });
+                this.password_label.setStyle({ color: "#000000" });
             }
             else {
                 this.password_label.setStyle({ color: "#808080" });
