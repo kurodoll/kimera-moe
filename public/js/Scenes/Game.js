@@ -15,6 +15,9 @@ class SceneGame extends Phaser.Scene {
 
         this.entities = {}; // Known entities
 
+        // Data needed for rendering.
+        this.tiles_that_block = [ "wall" ];
+
         // Load image data.
         this.load.image("tileset cave", "/graphics/tilesets/cave");
         this.load.json("tileset cave data", "/data/tilesets/cave");
@@ -250,6 +253,31 @@ class SceneGame extends Phaser.Scene {
                     continue;
                 }
 
+                // Check whether the tile is hidden from view.
+                const tiles_on_line =
+                    this.getTilesOnLine(from, { x: x, y: y });
+
+                let tile_hidden = false;
+
+                for (let i = 0; i < tiles_on_line.length; i++) {
+                    const coord = tiles_on_line[i];
+
+                    const tile_type = level.tiles
+                        [coord.y * level.width + coord.x];
+
+                    if (this.tiles_that_block.indexOf(tile_type) >= 0) {
+                        // This tile is blocked, so tint it black.
+                        level.layer.getTileAt(x, y).tint = 0x000000;
+
+                        tile_hidden = true;
+                        break;
+                    }
+                }
+
+                if (tile_hidden) {
+                    continue;
+                }
+
                 // Tint the tile darker based on its distance and how good the
                 // sight level is.
                 const distance = Math.sqrt(
@@ -277,6 +305,111 @@ class SceneGame extends Phaser.Scene {
                 }
             }
         }
+    }
+
+    // Returns a list of tiles that exist along a line.
+    getTilesOnLine(from, to) {
+        let tiles = [];
+
+        if (from.x == to.x && from.y == to.y) {
+            return tiles;
+        }
+
+        // Give a bit of space, so that walls aren't blocked.
+        if (from.x < to.x) { to.x -= 1; }
+        if (from.x > to.x) { to.x += 1; }
+ 
+        if (from.y < to.y) { to.y -= 1; }
+        if (from.y > to.y) { to.y += 1; } 
+
+        // Determine line details.
+        let x0, x1, y0, y1, ydir, xslope, yslope;
+        let xdir = 1;
+
+        // Always go from left to right on the x axis.
+        if (from.x > to.x) {
+            x0 = to.x;
+            y0 = to.y;
+            x1 = from.x;
+            y1 = from.y;
+        }
+        else if (from.x < to.x) {
+            x0 = from.x;
+            y0 = from.y;
+            x1 = to.x;
+            y1 = to.y;
+        }
+        else {
+            // If the x values are equal, don't advance along the x axis.
+            x0 = from.x;
+            y0 = from.y;
+            x1 = to.x;
+            y1 = to.y;
+
+            xdir = 0;
+            x1++;
+        }
+
+        if (y0 == y1) {
+            // If the y values are equal, don't advance along the y axis.
+            ydir = 0;
+            y1++;
+        }
+        else {
+            ydir = y0 > y1 ? -1 : 1;
+        }
+
+        // Determine which distance is lowest (x or y). If the x distance is
+        // larger, then the delta that y changes at should be lowered so that
+        // it advances towards the endpoint at the same rate that x does.
+        const dx = Math.abs(from.x - to.x);
+        const dy = Math.abs(from.y - to.y);
+
+        if (dx > dy) {
+            xslope = 1;
+            yslope = dy / dx;
+        }
+        else {
+            yslope = 1;
+            xslope = dx / dy;
+        }
+
+        // How often points should be checked for intersection with a tile.
+        const delta = 0.1;
+
+        // Find points.
+        let y = y0;
+        for (let x = x0; x < x1; x += delta * xdir * xslope) {
+            // Add 0.5 to the points since we want to check through the middle
+            // of tiles. 
+            const coord = {
+                x: Math.floor(x + 0.5),
+                y: Math.floor(y + 0.5)
+            };
+
+            // Only save the point if it's new.
+            let coord_seen = false;
+
+            for (let i = 0; i < tiles.length; i++) {
+                if (tiles[i].x == coord.x && tiles[i].y == coord.y) {
+                    coord_seen = true;
+                    break;
+                }
+            }
+
+            if (!coord_seen) {
+                tiles.push(coord);
+            }
+
+            // Advance the y axis, in case the x points are the same and the y
+            // axis needs to be checked to see when we've reached the endpoint.
+            y += delta * ydir * yslope;
+            if ((ydir == 1 && y >= y1) || (ydir == -1 && y <= y1)) {
+                break;
+            }
+        }
+
+        return tiles;
     }
 
 
