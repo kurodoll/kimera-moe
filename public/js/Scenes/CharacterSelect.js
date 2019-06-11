@@ -30,6 +30,8 @@ class SceneCharacterSelect extends Phaser.Scene {
         for (let i = 65; i <= 90; i++) { // Characters a-z & A-Z
             this.valid_keys.push(i);
         }
+
+        this.active_ui_element = "character select";
     }
 
     create() {
@@ -38,6 +40,20 @@ class SceneCharacterSelect extends Phaser.Scene {
             "a) Create New Character",
             this.default_font
         );
+
+        // Allow user to click to focus.
+        this.focus = this.add.zone(
+            0,
+            0,
+            this.sys.game.canvas.width,
+            this.sys.game.canvas.height
+        ).setOrigin(0, 0).setInteractive();
+
+        this.input.on("gameobjectup", (pointer, game_object) => {
+            if (game_object === this.focus) {
+                active_ui_element = this.active_ui_element;
+            }
+        });
 
 
         // ==================================================== KEYBOARD INPUT
@@ -97,5 +113,6 @@ class SceneCharacterSelect extends Phaser.Scene {
         this.name_field = this.add.text(110, 27, "", this.default_font);
 
         active_ui_element = "character select name";
+        this.active_ui_element = "character select name";
     }
 }
