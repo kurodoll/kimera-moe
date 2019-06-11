@@ -284,7 +284,6 @@ class SceneGeneralUI extends Phaser.Scene {
             this.console_shown = false;
 
             this.console_bg.visible = false;
-            this.console_input.visible = false;
             this.console_input_cursor.visible = false;
             this.console_camera.visible = false;
 
