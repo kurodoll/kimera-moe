@@ -96,11 +96,20 @@ $(() => {
     // go back in history or anything like that, forward the keypress to the
     // relevant scene.
     // Overrides backspace, tab, and the / key.
+    const listen_for = [ "/", "_", "`", "?" ];
+
     $(document).on("keydown", (e) => {
-        if (e.keyCode == 8 || e.keyCode == 9 || e.key == "/" || e.key == "_") {
+        if (e.keyCode == 8 || e.keyCode == 9 ||
+            (listen_for.indexOf(e.key) != -1))
+        {
             e.preventDefault();
 
-            if (active_ui_element == "console") {
+            // If the user hits the ~ key, bring up the console and focus it
+            // regardless of what is in focus.
+            if (e.key == "`") {
+                game.scene.getScene("general ui").keypress(e);
+            }
+            else if (active_ui_element == "console") {
                 game.scene.getScene("general ui").keypress(e);
             }
             else if (active_ui_element.substring(0, 5) == "login") {

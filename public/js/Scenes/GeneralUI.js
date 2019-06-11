@@ -45,6 +45,7 @@ class SceneGeneralUI extends Phaser.Scene {
         this.message_history = [];
         this.message_history_cur_y = 7;
 
+        this.console_shown = true;
         this.console_maximized = false;
 
         // Create a list of characters that are valid for text input.
@@ -73,7 +74,7 @@ class SceneGeneralUI extends Phaser.Scene {
         this.status_bar_bg.fillStyle(0x000000, 0.9);
         this.status_bar_bg.fillRect(0, this.ch - 20, this.cw, this.ch);
 
-        // Display ping in the bottom-right of the screen.
+        // Display ping in the bottom-left of the screen.
         this.text_ping = this.add.text(
             10, this.ch - 16,
             "Connecting to server...",
@@ -127,6 +128,25 @@ class SceneGeneralUI extends Phaser.Scene {
             this.coords_console.h
         ).setScroll(this.cw, 0);
 
+        // Show the latest message on the status bar when the console is
+        // hidden.
+        this.console_latest_message = this.add.text(
+            this.coords_console.x + 10,
+            this.ch - 16,
+            "",
+            this.default_font
+        );
+
+        this.console_open_label = this.add.text(
+            this.coords_console.x - 80,
+            this.ch - 16,
+            "~ to open log",
+            this.subdued_font
+        );
+
+        // Hide the console by default.
+        this.toggleConsole();
+
 
         // ===================================================== KEYBOARD INPUT
         this.input.keyboard.on("keydown", (key) => {
@@ -167,7 +187,7 @@ class SceneGeneralUI extends Phaser.Scene {
                 if (this.console_input_cursor.visible) {
                     this.console_input_cursor.visible = false;
                 }
-                else {
+                else if (this.console_shown) {
                     this.console_input_cursor.visible = true;
                 }
             }
@@ -225,6 +245,8 @@ class SceneGeneralUI extends Phaser.Scene {
         const message_history_bottom = this.coords_console.h - 30;
         this.console_camera.scrollY =
             this.message_history_cur_y - message_history_bottom;
+
+        this.console_latest_message.text = message;
     }
 
     chatMessage(details) {
@@ -253,6 +275,35 @@ class SceneGeneralUI extends Phaser.Scene {
         const message_history_bottom = this.coords_console.h - 30;
         this.console_camera.scrollY =
             this.message_history_cur_y - message_history_bottom;
+
+        this.console_latest_message.text = message_text.text;
+    }
+
+    toggleConsole() {
+        if (this.console_shown) {
+            this.console_shown = false;
+
+            this.console_bg.visible = false;
+            this.console_input.visible = false;
+            this.console_input_cursor.visible = false;
+            this.console_camera.visible = false;
+
+            if (this.message_history.length) {
+                this.console_latest_message.text = this.message_history[this.message_history.length - 1].text.text;
+            }
+        }
+        else {
+            this.console_shown = true;
+
+            this.console_bg.visible = true;
+            this.console_input.visible = true;
+            this.console_input_cursor.visible = true;
+            this.console_camera.visible = true;
+
+            this.console_latest_message.text = "Type ? for help";
+
+            active_ui_element = "console";
+        }
     }
 
     moveConsole(x, y, w, h) {
@@ -277,11 +328,18 @@ class SceneGeneralUI extends Phaser.Scene {
     }
 
     keypress(key) {
-        if (active_ui_element == "console") {
+        if (key.key == "`") {
+            this.toggleConsole();
+        }
+        else if (active_ui_element == "console") {
             if (key.keyCode == 8) { // Backspace
                 this.console_input.text = this.console_input.text.slice(0, -1);
             }
             else if (key.keyCode == 9) {
+                if (!this.console_shown) {
+                    this.toggleConsole();
+                }
+
                 if (this.console_maximized) {
                     this.coords_console = this.coords_console_old;
                     this.console_maximized = false;
