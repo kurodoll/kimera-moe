@@ -106,6 +106,9 @@ class SceneGame extends Phaser.Scene {
         const level_id = level.components.level.id;
         this.levels[level_id] = level.components.level;
 
+        // Keep a list of locally seen-before tiles.
+        this.levels[level_id].tiles_known = {};
+
         // If the player's character is on this level, set the level as active.
         if (this.character_entity.components.position.level == level_id) {
             this.active_level = level_id;
@@ -334,6 +337,11 @@ class SceneGame extends Phaser.Scene {
                 }
 
                 if (tile_hidden) {
+                    // If we've seen the tile before, show it with a tint.
+                    if (level.tiles_known[y * level.width + x]) {
+                        level.layer.getTileAt(x, y).tint = 0x804020;
+                    }
+
                     continue;
                 }
 
@@ -347,7 +355,13 @@ class SceneGame extends Phaser.Scene {
                 // If the tile is further than the sight level, just hide it.
                 // The actual view distance is the sight level * 5.
                 if (distance > sight_level * 5) {
-                    level.layer.getTileAt(x, y).tint = 0x000000;
+                    // If we've seen the tile before, show it with a tint.
+                    if (level.tiles_known[y * level.width + x]) {
+                        level.layer.getTileAt(x, y).tint = 0x804020;
+                    }
+                    else {
+                        level.layer.getTileAt(x, y).tint = 0x000000;
+                    }
                 }
                 else {
                     let brightness = 1;
@@ -361,6 +375,9 @@ class SceneGame extends Phaser.Scene {
                         Math.round(255 * brightness)
                     );
                     level.layer.getTileAt(x, y).tint = hex;
+
+                    // Set the tile as known so that we can see it from now on.
+                    level.tiles_known[y * level.width + x] = true;
                 }
             }
         }
@@ -447,10 +464,10 @@ class SceneGame extends Phaser.Scene {
             // Ignore the corners of tiles to get a more even FOV.
             let ignore = false;
 
-            if (Math.floor(real_x - 0.1) != Math.floor(real_x) ||
-                Math.floor(real_x + 0.1) != Math.floor(real_x) ||
-                Math.floor(real_y - 0.1) != Math.floor(real_y) ||
-                Math.floor(real_y + 0.1) != Math.floor(real_y) )
+            if (Math.floor(real_x - 0.05) != Math.floor(real_x) ||
+                Math.floor(real_x + 0.05) != Math.floor(real_x) ||
+                Math.floor(real_y - 0.05) != Math.floor(real_y) ||
+                Math.floor(real_y + 0.05) != Math.floor(real_y) )
             {
                 ignore = true;
             }
