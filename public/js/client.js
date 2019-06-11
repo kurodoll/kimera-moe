@@ -88,6 +88,10 @@ $(() => {
         game.scene.getScene("game").updateEntities(entities);
     });
 
+    socket.on("destroy entity", (entity_id) => {
+        game.scene.getScene("game").destroyEntity(entity_id);
+    });
+
 
       //---------------------------------------------------------------------//
      //                                         JQUERY BROWSER INTERACTION  //

@@ -207,7 +207,7 @@ def login(sid, details):
         clients[sid]["username"] = details["username"]
         clients[sid]["logged_in"] = True
 
-        sio.emit("login success")
+        sio.emit("login success", room=sid)
 
 
 @sio.on("new character")

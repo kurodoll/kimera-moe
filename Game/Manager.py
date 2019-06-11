@@ -142,8 +142,19 @@ class Manager:
 
             log("Manager", f"Deleted Entity#{entity_id}", "debug(2)")
 
+            # Remove the entity from the list of updated entities.
+            if entity_id in self.entities_updated:
+                self.entities_updated.remove(entity_id)
+
             # Actually delete the entity object.
             del self.entities[entity_id]
+
+            # Tell clients to destroy the entity.
+            level_id = pos_comp.data["level"]
+
+            if level_id in self.links:
+                for sid in self.links[level_id]:
+                    self.sio.emit("destroy entity", entity_id, room=sid)
 
     def markEntityUpdated(self, entity_id):
         if entity_id in self.entities:

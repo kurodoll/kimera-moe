@@ -92,6 +92,8 @@ class SceneGame extends Phaser.Scene {
      //                                                   CUSTOM FUNCTIONS  //
     //---------------------------------------------------------------------//
     setCharacterEntity(character) {
+        console.log("setCharacterEntity:", character);
+
         this.character_entity = character;
         this.entities[character.id] = character;
 
@@ -103,6 +105,8 @@ class SceneGame extends Phaser.Scene {
     }
 
     addLevel(level) {
+        console.log("addlevel:", level);
+
         const level_id = level.components.level.id;
         this.levels[level_id] = level.components.level;
 
@@ -121,7 +125,11 @@ class SceneGame extends Phaser.Scene {
 
     // Update existing/add new entities sent from the server.
     updateEntities(entities) {
-        for (const entity_id in entities) {
+        console.log("updateEntities:", entities);
+
+        for (let entity_id in entities) {
+            entity_id = parseInt(entity_id);
+
             if (this.entities[entity_id]) {
                 this.entities[entity_id].components =
                     entities[entity_id].components;
@@ -129,17 +137,42 @@ class SceneGame extends Phaser.Scene {
             else {
                 this.entities[entity_id] = entities[entity_id];
 
-                // Add the entity to the level data too.
+                // Add the entity to the level data too, if needed.
                 const level_id =
                     this.entities[entity_id].components.position.level;
 
-                this.levels[level_id].entities.push(entity_id);
+                if (this.levels[level_id].entities.indexOf(entity_id) == -1) {
+                    this.levels[level_id].entities.push(entity_id);
+                }
             }
         }
 
         // Render entities to ensure that their changes are shown, and that new
         // ones appear.
         this.renderEntities(this.active_level);
+    }
+
+    destroyEntity(entity_id) {
+        console.log("destroyEntity:", entity_id);
+
+        if (this.entities[entity_id]) {
+            // Remove from level.
+            const level_id =
+                this.entities[entity_id].components.position.level;
+
+            const index = this.levels[level_id].entities.indexOf(entity_id);
+            if (index != -1) {
+                this.levels[level_id].entities.splice(index, 1);
+            }
+
+            // Remove sprite, if applicable.
+            if (this.entities[entity_id].image) {
+                this.entities[entity_id].image.destroy();
+            }
+
+            // Delete entity data from entity list.
+            delete this.entities[entity_id];
+        }
     }
 
 
