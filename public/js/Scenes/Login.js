@@ -27,6 +27,7 @@ class SceneLogin extends Phaser.Scene {
 
         // Actual assets.
         this.load.image("login bg", "/graphics/art/login_bg");
+        this.load.image("blue orb", "/graphics/particles/blue_orb");
 
         // Allow Google fonts to be loaded.
         this.load.script(
@@ -92,7 +93,7 @@ class SceneLogin extends Phaser.Scene {
                         fontSize: 100,
                         color: "#FFFFFF"
                     }
-                ).setShadow(0, 0, "#004080", 2, false, true).setOrigin(0.5);
+                ).setShadow(0, 0, "#0080C0", 2, false, true).setOrigin(0.5);
 
                 const game_subtitle = this.add.text(
                     this.cw/2 + 160, 160,
@@ -222,6 +223,19 @@ class SceneLogin extends Phaser.Scene {
                 getStart: () => 0,
                 getEnd: () => 1
             }
+        });
+
+        // Particle effect.
+        this.particle = this.add.particles("blue orb");
+        this.emitter = this.particle.createEmitter({
+            x: this.cw + 500,
+            y: this.ch,
+            angle: { min: 170, max: 200 },
+            speed: 900,
+            gravityY: 0,
+            lifespan: { min: 5000, max: 5000 },
+            blendMode: "MULTIPLY",
+            alpha: 0.5
         });
 
         // Make sure the General UI scene is shown above this one.
