@@ -31,6 +31,7 @@ class Entity:
         )
 
         self.components = {}
+        self.updated = True
 
         # If this entity is to be based off of a base, then load that base data
         # and apply it to this entity.

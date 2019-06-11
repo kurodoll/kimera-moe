@@ -28,9 +28,6 @@ config = {
 
 pp = pprint.PrettyPrinter(indent=4)
 
-# Game management.
-GameManager = Manager.Manager()
-
 
 # --------------------------------------------------------------------------- #
 #                                                        INITIALIZE SOCKET.IO #
@@ -51,6 +48,8 @@ except IOError:
 app = socketio.WSGIApp(sio, static_files=static_files)
 log("server.py", "Initialized Server/Socket.io", timer_end="init sio")
 
+# Game management.
+GameManager = Manager.Manager(sio)
 
 # --------------------------------------------------------------------------- #
 #                                                       SOCKET.IO INTERACTION #
@@ -82,6 +81,8 @@ def disconnect(sid):
 
         if "character" in clients[sid]:
             GameManager.destroyEntity(clients[sid]["character"].id)
+
+    GameManager.unlinkClient(sid)
 
 
 # ===================================================================== General
@@ -220,6 +221,9 @@ def new_character(sid, details):
     character = GameManager.newCharacter(details)
     clients[sid]["character"] = character
 
+    character_level = character.getComponent("position").data["level"]
+    GameManager.linkClientToLevel(sid, character_level)
+
     sio.emit("character entity", character.toJSON(), room=sid)
 
 
@@ -255,6 +259,36 @@ def request_entities(sid, entities):
     sio.emit("entity data", entity_data, room=sid)
 
 
+# ============================================================= Client Gameplay
+@sio.on("action")
+def action(sid, details):
+    log(
+        "server.py",
+        f"'{details['type']}' action recieved from {clients[sid]['username']}",
+        "debug(3)"
+    )
+
+    GameManager.queueEvent({
+        "category": "movement",
+        "event": {
+            "type": "move entity relative",
+            "details": {
+                "entity": clients[sid]["character"],
+                "direction": details["direction"]
+            }
+        }
+    })
+
+
+# --------------------------------------------------------------------------- #
+#                                                                     THREADS #
+# --------------------------------------------------------------------------- #
+def processEventQueueThread():
+    while True:
+        GameManager.processEvents()
+        sio.sleep(0.01)
+
+
 # --------------------------------------------------------------------------- #
 #                                                                         RUN #
 # --------------------------------------------------------------------------- #
@@ -265,6 +299,9 @@ if __name__ == "__main__":
     # provided.
     if "PORT" in os.environ.keys():
         port = int(os.environ["PORT"])
+
+    # Start threads.
+    sio.start_background_task(processEventQueueThread)
 
     # Run the server.
     log("server.py", f"Starting server on port {port}")

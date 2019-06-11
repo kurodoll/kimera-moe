@@ -38,6 +38,53 @@ class SceneGame extends Phaser.Scene {
             progress.destroy();
             this.scene.start("login");
         });
+
+        // Keybindings.
+        this.keys_movement = {
+            "1": "down left",
+            "2": "down",
+            "3": "down right",
+            "4": "left",
+            "6": "right",
+            "7": "up left",
+            "8": "up",
+            "9": "up right"
+        };
+    }
+
+    create() {
+        // Allow user to click to focus.
+        this.focus = this.add.zone(
+            0,
+            0,
+            this.sys.game.canvas.width,
+            this.sys.game.canvas.height
+        ).setOrigin(0, 0).setInteractive();
+
+        this.input.on("gameobjectup", (pointer, game_object) => {
+            if (game_object === this.focus) {
+                active_ui_element = "gameplay";
+            }
+        });
+
+
+        // ===================================================== KEYBOARD INPUT
+        active_ui_element = "gameplay";
+
+        this.input.keyboard.on("keydown", (key) => {
+            if (active_ui_element == "gameplay") {
+                // Movement.
+                if (this.keys_movement[key.key]) {
+                    socket.emit(
+                        "action",
+                        {
+                            type: "move",
+                            direction: this.keys_movement[key.key]
+                        }
+                    );
+                }
+            }
+        });
     }
 
 
@@ -72,7 +119,19 @@ class SceneGame extends Phaser.Scene {
     // Update existing/add new entities sent from the server.
     updateEntities(entities) {
         for (const entity_id in entities) {
-            this.entities[entity_id] = entities[entity_id];
+            if (this.entities[entity_id]) {
+                this.entities[entity_id].components =
+                    entities[entity_id].components;
+            }
+            else {
+                this.entities[entity_id] = entities[entity_id];
+
+                // Add the entity to the level data too.
+                const level_id =
+                    this.entities[entity_id].components.position.level;
+
+                this.levels[level_id].entities.push(entity_id);
+            }
         }
 
         // Render entities to ensure that their changes are shown, and that new
@@ -381,24 +440,40 @@ class SceneGame extends Phaser.Scene {
         let y = y0;
         for (let x = x0; x < x1; x += delta * xdir * xslope) {
             // Add 0.5 to the points since we want to check through the middle
-            // of tiles. 
-            const coord = {
-                x: Math.floor(x + 0.5),
-                y: Math.floor(y + 0.5)
-            };
+            // of tiles. Actually 0.49 seems to work a bit better.
+            const real_x = x + 0.49;
+            const real_y = y + 0.49;
 
-            // Only save the point if it's new.
-            let coord_seen = false;
+            // Ignore the corners of tiles to get a more even FOV.
+            let ignore = false;
 
-            for (let i = 0; i < tiles.length; i++) {
-                if (tiles[i].x == coord.x && tiles[i].y == coord.y) {
-                    coord_seen = true;
-                    break;
-                }
+            if (Math.floor(real_x - 0.1) != Math.floor(real_x) ||
+                Math.floor(real_x + 0.1) != Math.floor(real_x) ||
+                Math.floor(real_y - 0.1) != Math.floor(real_y) ||
+                Math.floor(real_y + 0.1) != Math.floor(real_y) )
+            {
+                ignore = true;
             }
 
-            if (!coord_seen) {
-                tiles.push(coord);
+            if (!ignore) {
+                const coord = {
+                    x: Math.floor(real_x),
+                    y: Math.floor(real_y)
+                };
+
+                // Only save the point if it's new.
+                let coord_seen = false;
+
+                for (let i = 0; i < tiles.length; i++) {
+                    if (tiles[i].x == coord.x && tiles[i].y == coord.y) {
+                        coord_seen = true;
+                        break;
+                    }
+                }
+
+                if (!coord_seen) {
+                    tiles.push(coord);
+                }
             }
 
             // Advance the y axis, in case the x points are the same and the y

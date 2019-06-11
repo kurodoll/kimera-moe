@@ -8,6 +8,7 @@
             "sprite": "player"
         },
 
-        "stats": {}
+        "stats": {},
+        "can_move": {}
     }
 }

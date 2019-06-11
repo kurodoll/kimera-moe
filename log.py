@@ -62,10 +62,12 @@ def log(caller, message, log_level="log", timer_start="", timer_end=""):
         print(colorama.Fore.CYAN, end="")
     elif log_level == "debug(2)":
         print(subdued, end="")
+    elif log_level == "debug(3)":
+        print(subdued, end="")
     elif log_level == "debug (network)":
         print(colorama.Fore.BLUE, end="")
 
-    if log_level != "debug(2)":
+    if log_level != "debug(2)" and log_level != "debug(3)":
         print(f"{log_level.upper()}{reset}", end=" ")
     else:
         print(f"{log_level.upper()}", end=" ")
