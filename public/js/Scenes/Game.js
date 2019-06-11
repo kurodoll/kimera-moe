@@ -257,17 +257,24 @@ class SceneGame extends Phaser.Scene {
                         Math.pow(Math.abs(y - from.y), 2)
                 );
 
-                let brightness = 1;
-                if (distance > sight_level) {
-                    brightness = 1 / (distance / sight_level);
+                // If the tile is further than the sight level, just hide it.
+                // The actual view distance is the sight level * 5.
+                if (distance > sight_level * 5) {
+                    level.layer.getTileAt(x, y).tint = 0x000000;
                 }
+                else {
+                    let brightness = 1;
+                    if (distance > sight_level) {
+                        brightness = 1 / (distance / sight_level);
+                    }
 
-                const hex = this.rgbToHex(
-                    Math.round(255 * brightness),
-                    Math.round(255 * brightness),
-                    Math.round(255 * brightness)
-                );
-                level.layer.getTileAt(x, y).tint = hex;
+                    const hex = this.rgbToHex(
+                        Math.round(255 * brightness),
+                        Math.round(255 * brightness),
+                        Math.round(255 * brightness)
+                    );
+                    level.layer.getTileAt(x, y).tint = hex;
+                }
             }
         }
     }
