@@ -27,7 +27,7 @@ class SceneGeneralUI extends Phaser.Scene {
         this.highlight_font = {
             fontFamily: "Verdana",
             fontSize: 10,
-            color: "#FFC080"
+            color: "#80C0FF"
         };
 
         this.code_font = {
@@ -68,9 +68,14 @@ class SceneGeneralUI extends Phaser.Scene {
             h: 300
         };
 
+        // Status bar background.
+        this.status_bar_bg = this.add.graphics();
+        this.status_bar_bg.fillStyle(0x000000, 0.9);
+        this.status_bar_bg.fillRect(0, this.ch - 20, this.cw, this.ch);
+
         // Display ping in the bottom-right of the screen.
         this.text_ping = this.add.text(
-            this.cw - 700, this.ch - 17,
+            10, this.ch - 16,
             "Connecting to server...",
             this.default_font
         );
@@ -89,6 +94,14 @@ class SceneGeneralUI extends Phaser.Scene {
             this.coords_console.x + 10,
             this.coords_console.y + this.coords_console.h - 20,
             "", this.default_font
+        );
+
+        this.console_input_cursor = this.add.graphics();
+        this.console_input_cursor.fillStyle(0xFFFFFF, 1);
+        this.console_input_cursor.fillRect(
+            this.coords_console.x + 10,
+            this.coords_console.y + this.coords_console.h - 19,
+            2, 10
         );
 
         // Allow user to click the console window to focus it.
@@ -135,8 +148,33 @@ class SceneGeneralUI extends Phaser.Scene {
                 else if (key.keyCode == 40) {
                     this.console_camera.scrollY += this.coords_console.h / 2;
                 }
+
+                // Update cursor.
+                this.console_input_cursor.destroy();
+                this.console_input_cursor = this.add.graphics();
+                this.console_input_cursor.fillStyle(0xFFFFFF, 1);
+                this.console_input_cursor.fillRect(
+                    this.coords_console.x + 10 + this.console_input.width,
+                    this.coords_console.y + this.coords_console.h - 19,
+                    2, 10
+                );
             }
         });
+
+        // Keep track of which UI element is in focus.
+        setInterval(() => {
+            if (active_ui_element == "console") {
+                if (this.console_input_cursor.visible) {
+                    this.console_input_cursor.visible = false;
+                }
+                else {
+                    this.console_input_cursor.visible = true;
+                }
+            }
+            else {
+                this.console_input_cursor.visible = false;
+            }
+        }, 500);
     }
 
 
@@ -259,7 +297,7 @@ class SceneGeneralUI extends Phaser.Scene {
                     this.coords_console_old = this.coords_console;
                     this.console_maximized = true;
 
-                    this.moveConsole(0, 0, this.cw, this.ch);
+                    this.moveConsole(0, 0, this.cw, this.ch - 20);
                 }
 
                 const message_history_bottom = this.coords_console.h - 30;
@@ -269,6 +307,16 @@ class SceneGeneralUI extends Phaser.Scene {
             else {
                 this.console_input.text += key.key;
             }
+
+            // Update cursor.
+            this.console_input_cursor.destroy();
+            this.console_input_cursor = this.add.graphics();
+            this.console_input_cursor.fillStyle(0xFFFFFF, 1);
+            this.console_input_cursor.fillRect(
+                this.coords_console.x + 10 + this.console_input.width,
+                this.coords_console.y + this.coords_console.h - 19,
+                2, 10
+            );
         }
     }
 }
