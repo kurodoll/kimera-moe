@@ -24,6 +24,11 @@ class SceneGame extends Phaser.Scene {
 
         this.load.image("player", "/graphics/sprites/player");
 
+        // Load sound data.
+        this.load.audio("walk1", "/sound/effects/walk1.mp3");
+        this.load.audio("walk2", "/sound/effects/walk2.mp3");
+        this.last_movement = 0;
+
         // Loading bar.
         const progress = this.add.graphics();
 
@@ -31,7 +36,6 @@ class SceneGame extends Phaser.Scene {
             progress.clear();
             progress.fillStyle(0xFFFFFF, 1);
             progress.fillRect(0, this.ch/2 - 30, this.cw*value, 60);
-
         });
 
         this.load.on("complete", () => {
@@ -53,6 +57,14 @@ class SceneGame extends Phaser.Scene {
     }
 
     create() {
+        this.se_walk1 = this.sound.add("walk1", {
+            volume: 0.7
+        });
+
+        this.se_walk2 = this.sound.add("walk2", {
+            volume: 0.7
+        });
+
         // Allow user to click to focus.
         this.focus = this.add.zone(
             0,
@@ -75,13 +87,17 @@ class SceneGame extends Phaser.Scene {
             if (active_ui_element == "gameplay") {
                 // Movement.
                 if (this.keys_movement[key.key]) {
-                    socket.emit(
-                        "action",
-                        {
-                            type: "move",
-                            direction: this.keys_movement[key.key]
-                        }
-                    );
+                    if ((+new Date()) > this.last_movement + 200) {
+                        socket.emit(
+                            "action",
+                            {
+                                type: "move",
+                                direction: this.keys_movement[key.key]
+                            }
+                        );
+
+                        this.last_movement = +new Date();
+                    }
                 }
             }
         });
@@ -283,8 +299,7 @@ class SceneGame extends Phaser.Scene {
                         {
                             entity.image.tween = this.add.tween({
                                 targets: [ entity.image ],
-                                ease: 'Sine.easeInOut',
-                                duration: 100,
+                                duration: 150,
                                 delay: 0,
                                 x: {
                                     getStart: () => entity.image.x,
@@ -296,6 +311,11 @@ class SceneGame extends Phaser.Scene {
                                 }
                             });
                         }
+
+                        this.se_walk1.play();
+                        this.se_walk1.once("complete", () => {
+                            this.se_walk2.play();
+                        });
                     }
                     else {
                         // We need to create a sprite for this entity.
@@ -312,7 +332,7 @@ class SceneGame extends Phaser.Scene {
         // Have the camera follow the sprite of the player's character.
         this.cameras.main.startFollow(
             this.character_entity.image, 
-            false,    // Round Pixels (sub-pixel adjustment)
+            true,     // Round Pixels (sub-pixel adjustment)
             0.1, 0.1, // Camera Lerp (smooth movement)
             -Math.floor(this.character_entity.image.width/2),   // X Offset
             -Math.floor(this.character_entity.image.height/2)); // Y Offset

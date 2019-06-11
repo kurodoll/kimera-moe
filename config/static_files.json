@@ -61,5 +61,15 @@
     "/graphics/particles/blue_orb": {
         "content_type": "image/png",
         "filename": "public/graphics/particles/blue_orb.png"
+    },
+
+
+    "/sound/effects/walk1.mp3": {
+        "content_type": "audio/mpeg",
+        "filename": "public/sound/effects/walk1.mp3"
+    },
+    "/sound/effects/walk2.mp3": {
+        "content_type": "audio/mpeg",
+        "filename": "public/sound/effects/walk2.mp3"
     }
 }
