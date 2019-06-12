@@ -82,12 +82,12 @@ def connect(sid, env):
 def disconnect(sid):
     log("server.py", f"Disconnected: {sid}", "debug (network)", timer_end=sid)
 
-    global users_online
-    users_online -= 1
-    sio.emit("server info", {"users_online": users_online})
-
     if sid in clients:
         clients[sid]["online"] = False
+
+        global users_online
+        users_online -= 1
+        sio.emit("server info", {"users_online": users_online})
 
         if "character" in clients[sid]:
             GameManager.destroyEntity(clients[sid]["character"].id)
