@@ -118,6 +118,9 @@ class SceneGame extends Phaser.Scene {
         if (!this.levels[character.components.position.level]) {
             socket.emit("request level", character.components.position.level);
         }
+
+        // Update game UI elements related to the entity.
+        this.game.scene.getScene("game ui").updateEntity(character);
     }
 
     addLevel(level) {
@@ -194,6 +197,8 @@ class SceneGame extends Phaser.Scene {
             // Delete entity data from entity list.
             delete this.entities[entity_id];
         }
+
+        // TODO: Update game UI elements related to the entity.
     }
 
 
@@ -440,6 +445,25 @@ class SceneGame extends Phaser.Scene {
 
                     // Set the tile as known so that we can see it from now on.
                     level.tiles_known[y * level.width + x] = true;
+                }
+            }
+        }
+
+        // Hide entities that are out of sight.
+        for (let i = 0; i < level.entities.length; i++) {
+            const entity = this.entities[level.entities[i]];
+
+            if (entity && entity.image) {
+                const x = entity.components.position.x;
+                const y = entity.components.position.y;
+
+                if (level.layer.getTileAt(x, y).tint == 0x000000 ||
+                    level.layer.getTileAt(x, y).tint == 0x804020)
+                {
+                    entity.image.visible = false;
+                }
+                else {
+                    entity.image.visible = true;
                 }
             }
         }

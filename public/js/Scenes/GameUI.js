@@ -16,6 +16,25 @@ class SceneGameUI extends Phaser.Scene {
     update() {
         for (const np in this.nameplates) {
             const entity = this.nameplates[np].entity;
+
+            if (!entity.image) {
+                continue;
+            }
+
+            if (!entity.image.visible) {
+                if (this.nameplates[entity.id].text) {
+                    this.nameplates[entity.id].text.visible = false;
+                    this.nameplates[entity.id].bg.destroy();
+                }
+
+                continue;
+            }
+            else {
+                if (this.nameplates[entity.id].text) {
+                    this.nameplates[entity.id].text.visible = true;
+                }
+            }
+
             const username = entity.components.bio.username;
             const game_camera = this.scene.get("game").cameras.main;
 
