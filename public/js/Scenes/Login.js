@@ -74,7 +74,7 @@ class SceneLogin extends Phaser.Scene {
             duration: 3000,
             delay: 0,
             y: {
-                getStart: () => -this.ch,
+                getStart: () => +this.ch,
                 getEnd: () => 0
             }
         });

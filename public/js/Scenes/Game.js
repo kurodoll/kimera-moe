@@ -64,6 +64,12 @@ class SceneGame extends Phaser.Scene {
         this.se_walk2 = this.sound.add("walk2", {
             volume: 0.7
         });
+        
+        // Minimap.
+        this.minimap = this.cameras.add(
+            this.sys.game.canvas.width - 260, 10,
+            250, 250
+        ).setZoom(0.25).setBackgroundColor(0x000000);
 
         // Allow user to click to focus.
         this.focus = this.add.zone(
@@ -160,8 +166,10 @@ class SceneGame extends Phaser.Scene {
                 const level_id =
                     this.entities[entity_id].components.position.level;
 
-                if (this.levels[level_id].entities.indexOf(entity_id) == -1) {
-                    this.levels[level_id].entities.push(entity_id);
+                if (this.levels[level_id]) { // The level might not be loaded
+                    if (this.levels[level_id].entities.indexOf(entity_id) == -1) {
+                        this.levels[level_id].entities.push(entity_id);
+                    }
                 }
             }
 
@@ -344,6 +352,13 @@ class SceneGame extends Phaser.Scene {
             this.character_entity.image, 
             true,     // Round Pixels (sub-pixel adjustment)
             0.1, 0.1, // Camera Lerp (smooth movement)
+            -Math.floor(this.character_entity.image.width/2),   // X Offset
+            -Math.floor(this.character_entity.image.height/2)); // Y Offset
+
+        this.minimap.startFollow(
+            this.character_entity.image, 
+            true, // Round Pixels (sub-pixel adjustment)
+            0, 0, // Camera Lerp (smooth movement)
             -Math.floor(this.character_entity.image.width/2),   // X Offset
             -Math.floor(this.character_entity.image.height/2)); // Y Offset
 
