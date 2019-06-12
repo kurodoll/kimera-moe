@@ -375,6 +375,10 @@ class SceneGame extends Phaser.Scene {
                 let tile_hidden = false;
 
                 for (let i = 0; i < tiles_on_line.length; i++) {
+                    if (i == 0 || i == tiles_on_line.length - 1) {
+                        continue;
+                    }
+
                     const coord = tiles_on_line[i];
 
                     const tile_type = level.tiles
@@ -443,13 +447,6 @@ class SceneGame extends Phaser.Scene {
         if (from.x == to.x && from.y == to.y) {
             return tiles;
         }
-
-        // Give a bit of space, so that walls aren't blocked.
-        if (from.x < to.x) { to.x -= 1; }
-        if (from.x > to.x) { to.x += 1; }
- 
-        if (from.y < to.y) { to.y -= 1; }
-        if (from.y > to.y) { to.y += 1; } 
 
         // Determine line details.
         let x0, x1, y0, y1, ydir, xslope, yslope;
