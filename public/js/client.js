@@ -10,7 +10,13 @@ $(() => {
         type: Phaser.AUTO,
         width: window.innerWidth,
         height: window.innerHeight,
-        scene: [ SceneGeneralUI, SceneLogin, SceneCharacterSelect, SceneGame ],
+        scene: [
+            SceneGeneralUI,
+            SceneLogin,
+            SceneCharacterSelect,
+            SceneGame,
+            SceneGameUI
+        ],
         render: {
             "pixelArt": true
         }
@@ -81,6 +87,8 @@ $(() => {
     //========================================================== Game Data
     socket.on("character entity", (character) => {
         game.scene.switch("character select", "game");
+        game.scene.start("game ui");
+
         game.scene.getScene("game").setCharacterEntity(character);
     });
 

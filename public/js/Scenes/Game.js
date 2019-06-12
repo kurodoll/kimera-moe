@@ -161,6 +161,11 @@ class SceneGame extends Phaser.Scene {
                     this.levels[level_id].entities.push(entity_id);
                 }
             }
+
+            // Update game UI elements related to the entity.
+            this.game.scene.getScene("game ui").updateEntity(
+                this.entities[entity_id]
+            );
         }
 
         // Render entities to ensure that their changes are shown, and that new

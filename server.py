@@ -228,6 +228,7 @@ def new_character(sid, details):
         "debug"
     )
 
+    details["username"] = clients[sid]["username"]
     character = GameManager.newCharacter(details)
     clients[sid]["character"] = character
 

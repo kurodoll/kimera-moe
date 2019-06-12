@@ -37,6 +37,10 @@
         "content_type": "text/javascript",
         "filename": "public/js/Scenes/Game.js"
     },
+    "/js/scenes/game_ui": {
+        "content_type": "text/javascript",
+        "filename": "public/js/Scenes/GameUI.js"
+    },
 
 
     "/graphics/art/login_bg": {

@@ -81,6 +81,7 @@ class Manager:
 
         # Set details based on character creation.
         new_ent.getComponent("bio").updateData({
+            "username": details["username"],
             "name": details["name"]
         })
 
